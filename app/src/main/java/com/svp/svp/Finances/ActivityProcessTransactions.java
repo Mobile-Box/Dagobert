@@ -16,6 +16,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.Source;
+import com.svp.svp.Objects.Transaction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,15 +34,15 @@ import java.util.Calendar;
  * Created by Admin on 05.11.2017.
  */
 
-public class BankAccount {
+public class ActivityProcessTransactions {
 
     private Context mContext;
     private ArrayList<Source> mSources;
-    final ArrayList<ArrayList<String>> mNo_Model = new ArrayList<ArrayList<String>>();
-    final ArrayList<ArrayList<String>> mMultiple_Model = new ArrayList<ArrayList<String>>();
+    final ArrayList<Transaction> mNo_Model = new ArrayList<Transaction>();
+    final ArrayList<Transaction> mMultiple_Model = new ArrayList<Transaction>();
     String mLastUrl;
 
-    public BankAccount(Context context) {
+    public ActivityProcessTransactions(Context context) {
         mContext = context;
         mSources = createSources();
     }
@@ -69,11 +70,11 @@ public class BankAccount {
         }
     }
 
-    private void operateTransactions(final Source source, ArrayList<ArrayList<String>> transactions, final String transactionUrl) {
+    private void operateTransactions(ArrayList<Transaction> transactions, final String transactionUrl) {
         int counter = 0;
 
 
-        for (final ArrayList<String> transaction : transactions) {
+        for (final Transaction transaction : transactions) {
             counter++;
 
             RequestQueue queue = null;
@@ -81,12 +82,12 @@ public class BankAccount {
             final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/operations.php/processTransaction";
             final JSONObject jsonBody = new JSONObject();
             try {
-                jsonBody.put("name", transaction.get(source.getNamePosition()));
-                jsonBody.put("type", transaction.get(source.getTypePosition()));
-                jsonBody.put("detail_one", source.getDetailOnePosition() == 0 ? "empty" : transaction.get(source.getDetailOnePosition()));
-                jsonBody.put("detail_two", source.getDetailOnePosition() == 0 ? "empty" : transaction.get(source.getDetailTwoPosition()));
-                jsonBody.put("amount", transaction.get(source.getAmountPosition()).replace(",", ".").replaceAll("€, £", ""));
-                jsonBody.put("date", formatDateForSQL(transaction.get(source.getDatePosition())));
+                jsonBody.put("name", transaction.getName());
+                jsonBody.put("type", transaction.getType());
+                jsonBody.put("detail_one", transaction.getDetailOne());
+                jsonBody.put("detail_two", transaction.getDetailOne());
+                jsonBody.put("amount", transaction.getAmount());
+                jsonBody.put("date", transaction.getDate());
                 final String requestBody = jsonBody.toString();
                 Log.i("RequestBody " + Integer.toString(counter), requestBody);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -157,22 +158,20 @@ public class BankAccount {
 
     }
 
-    class receiveTransactions extends AsyncTask<String, String, ArrayList<ArrayList<String>>> {
+    class receiveTransactions extends AsyncTask<String, String, ArrayList<Transaction>> {
 
         Source mSource;
         String mUrl;
-
-
 
         public receiveTransactions(Source source, String url) {
             mSource = source;
             mUrl = url;
         }
 
-        protected ArrayList<ArrayList<String>> doInBackground(String... urls) {
+        protected ArrayList<Transaction> doInBackground(String... urls) {
 
             // Initiate return variable
-            ArrayList<ArrayList<String>> transactions = new ArrayList<ArrayList<String>>();
+            ArrayList<Transaction> transactions = new ArrayList<Transaction>();
             mUrl = urls[0];
 
             // Open InputStream
@@ -195,7 +194,8 @@ public class BankAccount {
                         ArrayList<String> arrayLine = new ArrayList<>();
                         for (String eachWord : row) //Iterate each String from the array
                             arrayLine.add(eachWord);
-                        transactions.add(arrayLine);
+                        double amount = Double.parseDouble(arrayLine.get(mSource.getAmountPosition()).replace(",", ".").replaceAll("€, £", ""));
+                        transactions.add(new Transaction(Integer.parseInt(arrayLine.get(mSource.getCodePosition())), arrayLine.get(mSource.getNamePosition()), Integer.parseInt(arrayLine.get(mSource.getTypePosition())), mSource.getDetailOnePosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailOnePosition()), mSource.getDetailTwoPosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailTwoPosition()), amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())),Integer.parseInt(arrayLine.get(mSource.getBankAccountId()))));
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException("Error in reading CSV file: " + ex);
@@ -210,8 +210,8 @@ public class BankAccount {
             return transactions;
         }
 
-        protected void onPostExecute(ArrayList<ArrayList<String>> t) {
-            if (t.size()>0) operateTransactions(mSource, t, mUrl);
+        protected void onPostExecute(ArrayList<Transaction> t) {
+            if (t.size()>0) operateTransactions(t, mUrl);
         }
     }
 
