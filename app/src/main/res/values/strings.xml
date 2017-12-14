@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Dagobert</string>
+
+    <!-- Process Transaction -->
+    <string name="booked_transactions">Gebuchte Transaktionen: </string>
+    <string name="transaction_no_model">Transaktionen ohne Vorlage: </string>
+    <string name="transactions_multiple_model">Transaktionen mit mehreren Vorlagen: </string>
+    <string name="restart">Neustarten</string>
+
+    <!-- Manuel Charging -->
+    <string name="account">Konto</string>
+    <string name="name">Name</string>
+    <string name="type">Typ</string>
+    <string name="detail_one">Erste Beschreibung</string>
+    <string name="detail_two">Zweite Beschreibung</string>
+    <string name="amount">Betrag</string>
+    <string name="date">Datum</string>
+    <string name="svp_subaccount_id">Unterkonto-Id</string>
+    <string name="charge">Buchen</string>
+    <string name="charge_model">Buchen  &amp; Vorlage</string>
+    <string name="no_detail">Nicht vorhanden</string>
+</resources>

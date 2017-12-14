@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            style="@style/textview_standard_center"
+            android:id="@+id/tvChargedTransactions"
+            android:text="Gebuchte Transaktionen: 60/348"/>
+
+        <TextView
+            style="@style/textview_standard_center"
+            android:id="@+id/tvTransactionsNoModel"
+            android:text="Transaktionen ohne Vorlage: 13/47"/>
+
+        <TextView
+            style="@style/textview_standard_center"
+            android:id="@+id/tvTransactionsMultipleModel"
+            android:text="Transaktion mit mehreren Vorlagen: 4/13"/>
+
+        <Button
+            style="@style/button_standard"
+            android:id="@+id/bRestart"
+            android:text="@string/restart"/>
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"></android.support.v4.view.ViewPager>
+
+
+
+</LinearLayout>

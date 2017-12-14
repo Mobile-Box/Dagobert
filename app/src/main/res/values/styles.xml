@@ -1,0 +1,81 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Text Views -->
+    <style name="textview_standard">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textSize">@dimen/text_size_standard</item>
+    </style>
+
+    <style name="textview_standard_center" parent="textview_standard">
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="textview_standard_transaction" parent="textview_standard">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="textview_standard_charge_header" parent="textview_standard">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="textview_standard_charge_value" parent="textview_standard">
+        <item name="android:layout_marginLeft">156dp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="textview_header" >
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textSize">@dimen/text_size_header</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Edit Texts -->
+    <style name="edittext_standard">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textColorHint">@color/colorBackgroundText</item>
+        <item name="android:textSize">@dimen/text_size_standard</item>
+    </style>
+
+    <style name="edittext_standard_charge_value" parent="textview_standard_charge_value">
+        <item name="android:textColorHint">@color/colorBackgroundText</item>
+    </style>
+
+    <!-- Buttons -->
+    <style name="button_standard">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">32dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/text_size_standard</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
+    </style>
+
+    <!-- Relative Layouts -->
+    <style name="relative_layout_charge">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+</resources>

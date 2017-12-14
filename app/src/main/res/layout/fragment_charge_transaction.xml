@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="16dp">
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+        <TextView
+            style="@style/textview_standard_charge_header"
+            android:text="@string/account" />
+
+        <TextView
+            style="@style/textview_standard_charge_value"
+            android:id="@+id/tvAccount"
+            android:text="Commerzbank_4600" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/name" />
+
+    <EditText
+        style="@style/edittext_standard_charge_value"
+        android:id="@+id/etName"
+        android:text="Gehalt Onur" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/type" />
+
+    <EditText
+        style="@style/edittext_standard_charge_value"
+        android:id="@+id/etType"
+        android:text="@string/no_detail" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/detail_two" />
+
+    <EditText
+        style="@style/edittext_standard_charge_value"
+        android:id="@+id/etDetailTwo"
+        android:text="@string/no_detail" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/amount" />
+
+    <TextView
+        style="@style/textview_standard_charge_value"
+        android:id="@+id/tvAmount"
+        android:text="457,16 €" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/date" />
+
+    <TextView
+        style="@style/textview_standard_charge_value"
+        android:id="@+id/tvDate"
+        android:text="01.12.2017" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+    <TextView
+        style="@style/textview_standard_charge_header"
+        android:text="@string/svp_subaccount_id"
+        android:id="@+id/textView" />
+
+        <EditText
+            android:id="@+id/etSubaccountId"
+            style="@style/edittext_standard_charge_value"
+            android:inputType="number"
+            android:text="8 (Gehälter)" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="@style/button_standard"
+            android:id="@+id/bCharge"
+            android:layout_weight="1"
+            android:layout_marginRight="16dp"
+            android:text="@string/charge"/>
+
+        <Button
+            style="@style/button_standard"
+            android:id="@+id/bChargeWithModel"
+            android:layout_weight="3"
+            android:layout_marginRight="16dp"
+            android:text="@string/charge_model"/>
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
