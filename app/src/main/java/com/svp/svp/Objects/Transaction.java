@@ -1,20 +1,22 @@
 package com.svp.svp.Objects;
 
+import java.io.Serializable;
+
 /**
  * Created by Eric Schumacher on 14.12.2017.
  */
 
-public class Transaction {
-    private int code;
+public class Transaction implements Serializable {
+    private String code;
     private String name;
-    private int type;
+    private String type;
     private String detailOne;
     private String detailTwo;
     private double amount;
     private String date;
     private int bankAccountId;
 
-    public Transaction(int code, String name, int type, String detailOne, String detailTwo, double amount, String date, int bankAccountId) {
+    public Transaction(String code, String name, String type, String detailOne, String detailTwo, double amount, String date, int bankAccountId) {
         this.code = code;
         this.name = name;
         this.type = type;
@@ -25,7 +27,7 @@ public class Transaction {
         this.bankAccountId = bankAccountId;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -33,7 +35,7 @@ public class Transaction {
         return name;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 

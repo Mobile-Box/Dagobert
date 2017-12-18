@@ -1,10 +1,10 @@
 package com.svp.svp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.svp.svp.Finances.ActivityProcessTransactions;
 import com.svp.svp.R;
 
 public class Activity_Main extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class Activity_Main extends AppCompatActivity {
         setUpLayout();
 
         // Data output
-        new ActivityProcessTransactions(this).processTransactions();
+        startActivity(new Intent(this, Activity_Update.class));
 
 
     }

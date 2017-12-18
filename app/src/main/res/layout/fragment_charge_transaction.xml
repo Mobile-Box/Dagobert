@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="16dp">
+    android:padding="16dp">
 
     <RelativeLayout
         style="@style/relative_layout_charge">
@@ -45,6 +45,20 @@
         style="@style/edittext_standard_charge_value"
         android:id="@+id/etType"
         android:text="@string/no_detail" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/relative_layout_charge">
+
+        <TextView
+            style="@style/textview_standard_charge_header"
+            android:text="@string/detail_one" />
+
+        <EditText
+            style="@style/edittext_standard_charge_value"
+            android:id="@+id/etDetailOne"
+            android:text="@string/no_detail" />
 
     </RelativeLayout>
 
