@@ -119,6 +119,7 @@ public class Activity_Update extends AppCompatActivity {
             final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/operations.php/processTransaction";
             final JSONObject jsonBody = new JSONObject();
             try {
+                jsonBody.put("code", transaction.getCode());
                 jsonBody.put("name", transaction.getName());
                 jsonBody.put("type", transaction.getType());
                 jsonBody.put("detail_one", transaction.getDetailOne());

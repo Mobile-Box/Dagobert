@@ -9,6 +9,7 @@
 
     <!-- Manuel Charging -->
     <string name="account">Konto</string>
+    <string name="code">Code</string>
     <string name="name">Name</string>
     <string name="type">Typ</string>
     <string name="detail_one">Erste Beschreibung</string>
@@ -19,4 +20,5 @@
     <string name="charge">Buchen</string>
     <string name="charge_model">Buchen  &amp; Vorlage</string>
     <string name="no_detail">Nicht vorhanden</string>
+    <string name="value_added_tax">Value added tax</string>
 </resources>

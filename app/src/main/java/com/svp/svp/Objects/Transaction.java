@@ -15,6 +15,7 @@ public class Transaction implements Serializable {
     private double amount;
     private String date;
     private int bankAccountId;
+    private int svpSubAccountId;
 
     public Transaction(String code, String name, String type, String detailOne, String detailTwo, double amount, String date, int bankAccountId) {
         this.code = code;
@@ -25,6 +26,7 @@ public class Transaction implements Serializable {
         this.amount = amount;
         this.date = date;
         this.bankAccountId = bankAccountId;
+        svpSubAccountId = 0;
     }
 
     public String getCode() {
@@ -57,5 +59,45 @@ public class Transaction implements Serializable {
 
     public int getBankAccountId() {
         return bankAccountId;
+    }
+
+    public int getSvpSubAccountId() {
+        return svpSubAccountId;
+    }
+
+    public void setSvpSubAccountId(int svpSubAccountId) {
+        this.svpSubAccountId = svpSubAccountId;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDetailOne(String detailOne) {
+        this.detailOne = detailOne;
+    }
+
+    public void setDetailTwo(String detailTwo) {
+        this.detailTwo = detailTwo;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setBankAccountId(int bankAccountId) {
+        this.bankAccountId = bankAccountId;
     }
 }
