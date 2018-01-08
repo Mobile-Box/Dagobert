@@ -2,10 +2,13 @@
     <string name="app_name">Dagobert</string>
 
     <!-- Process Transaction -->
-    <string name="booked_transactions">Gebuchte Transaktionen: </string>
-    <string name="transaction_no_model">Transaktionen ohne Vorlage: </string>
-    <string name="transactions_multiple_model">Transaktionen mit mehreren Vorlagen: </string>
-    <string name="restart">Neustarten</string>
+    <string name="charged_transactions">Charged: </string>
+    <string name="transaction_no_or_multiple_model">No or multiple Model: </string>
+    <string name="transactions_total">Total: </string>
+    <string name="transactions_already_charged">Already charged: </string>
+    <string name="number_files">Files: </string>
+    <string name="number_error">Error: </string>
+    <string name="restart">Restart</string>
 
     <!-- Manuel Charging -->
     <string name="account">Konto</string>
@@ -21,4 +24,17 @@
     <string name="charge_model">Buchen  &amp; Vorlage</string>
     <string name="no_detail">Nicht vorhanden</string>
     <string name="value_added_tax">Value added tax</string>
+    <string name="model_added">Model added</string>
+    <string name="model_exists">Model exists</string>
+
+    <!-- Balance-Sheet -->
+    <string name="profit_before_tax">Profit before tax</string>
+    <string name="profit_after_tax">Profit after tax</string>
+
+    <!-- Navigation -->
+    <string name="business_assets">Business Assets</string>
+    <string name="liabilities">Liabilities</string>
+    <string name="claims">Claims</string>
+    <string name="update">Update</string>
+
 </resources>

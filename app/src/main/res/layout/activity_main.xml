@@ -1,19 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!--
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    -->
+
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.svp.svp.Activities.Activity_Main">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <TextView
-        android:id="@+id/tvOutput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</android.support.constraint.ConstraintLayout>
+    <!-- The navigation drawer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:paddingTop="8dp"
+        android:orientation="vertical"
+        android:layout_gravity="start"
+        android:background="@color/colorWhite">
+
+        <RelativeLayout
+            android:id="@+id/rlUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivUpdate"
+                style="@style/image_view_navigation"
+                android:src="@drawable/ic_update_24dp" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_toRightOf="@id/ivUpdate"
+                android:text="@string/update" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/colorBackgroundText" />
+
+        <RelativeLayout
+            android:id="@+id/rlBusinessAssets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivAssets"
+                style="@style/image_view_navigation"
+                android:src="@drawable/ic_star_24dp" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_toRightOf="@id/ivAssets"
+                android:text="@string/business_assets" />
+
+            <TextView
+                android:id="@+id/tvAssetsValue"
+                style="@style/text_view_navigation"
+                android:layout_alignParentRight="true"
+                android:text="234.467 €" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlLiabilities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivLiabilities"
+                style="@style/image_view_navigation"
+                android:src="@drawable/ic_arrow_out_24dp" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_toRightOf="@id/ivLiabilities"
+                android:text="@string/liabilities" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_alignParentRight="true"
+                android:text="12.957 €" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlClaims"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivClaims"
+                style="@style/image_view_navigation"
+                android:src="@drawable/ic_arrow_in_24dp" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_toRightOf="@id/ivClaims"
+                android:text="@string/claims" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_alignParentRight="true"
+                android:text="21.865 €" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/colorBackgroundText" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.DrawerLayout>
+
+    <!--
+</layout>
+-->

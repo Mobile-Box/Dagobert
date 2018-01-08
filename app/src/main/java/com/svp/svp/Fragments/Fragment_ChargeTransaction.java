@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -21,7 +22,9 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.svp.svp.Activities.Activity_Update;
 import com.svp.svp.Constants.Constants_Intern;
+import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
 
@@ -129,6 +132,17 @@ public class Fragment_ChargeTransaction extends Fragment {
                 @Override
                 public void onResponse(String response) {
                     Log.i("Response - Model-Add", response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MODEL_ADDED)) {
+                            Toast.makeText(getActivity(), getString(R.string.model_added), Toast.LENGTH_SHORT).show();
+                        }
+                        if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MODEL_EXISTS)) {
+                            Toast.makeText(getActivity(), getString(R.string.model_exists), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -184,6 +198,16 @@ public class Fragment_ChargeTransaction extends Fragment {
                 @Override
                 public void onResponse(String response) {
                     Log.i("Response - Charge", response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_CHARGED)){
+                            ((Activity_Update)getActivity()).manuallyCharged(mTransaction);
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override

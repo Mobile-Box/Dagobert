@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvAccounts"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/tv_balancesheet_header"
+            android:text="@string/profit_before_tax"/>
+
+        <TextView
+            android:id="@+id/tvProfitBeforeTaxes"
+            style="@style/tv_balancesheet_header"
+            android:text="16.493 €"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvTaxes"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/tv_balancesheet_header"
+            android:text="@string/profit_before_tax"/>
+
+        <TextView
+            android:id="@+id/tvProfitAfterTaxes"
+            style="@style/tv_balancesheet_header"
+            android:text="10.359 €"/>
+
+    </LinearLayout>
+    
+
+
+</LinearLayout>

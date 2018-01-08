@@ -1,5 +1,7 @@
 package com.svp.svp.Objects;
 
+import java.util.ArrayList;
+
 /**
  * Created by Eric on 08.12.2017.
  */
@@ -34,6 +36,15 @@ public class Source {
 
     public int getCodePosition() {
         return codePosition;
+    }
+
+    public String buildCode(ArrayList<String> line, int rowNumber) {
+        if (fileName.matches("Commerzbank.*") || line.get(codePosition).isEmpty()) {
+            String code = Integer.toString(bankAccountId) + line.get(datePosition).replace(".", "") + Integer.toString(rowNumber);
+            return code;
+        } else {
+            return line.get(codePosition);
+        }
     }
 
     public int getNamePosition() {

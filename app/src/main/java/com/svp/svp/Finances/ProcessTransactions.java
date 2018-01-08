@@ -195,7 +195,7 @@ public class ProcessTransactions {
                         for (String eachWord : row) //Iterate each String from the array
                             arrayLine.add(eachWord);
                         double amount = Double.parseDouble(arrayLine.get(mSource.getAmountPosition()).replace(",", ".").replaceAll("€, £", ""));
-                        transactions.add(new Transaction(arrayLine.get(mSource.getCodePosition()), arrayLine.get(mSource.getNamePosition()), arrayLine.get(mSource.getTypePosition()), mSource.getDetailOnePosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailOnePosition()), mSource.getDetailTwoPosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailTwoPosition()), amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())),Integer.parseInt(arrayLine.get(mSource.getBankAccountId()))));
+                        //transactions.add(new Transaction(arrayLine.get(mSource.getCodePosition()), arrayLine.get(mSource.getNamePosition()), arrayLine.get(mSource.getTypePosition()), mSource.getDetailOnePosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailOnePosition()), mSource.getDetailTwoPosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailTwoPosition()), amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())),Integer.parseInt(arrayLine.get(mSource.getBankAccountId()))));
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException("Error in reading CSV file: " + ex);

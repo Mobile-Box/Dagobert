@@ -6,24 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.svp.svp.Adapter.PagerAdapter_ChargeTransactions;
 import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.Source;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
+import com.svp.svp.Volley.AppController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,18 +42,27 @@ import java.util.Calendar;
 public class Activity_Update extends AppCompatActivity {
 
     // Layout
-    TextView tvTransCharged;
-    TextView tvTransNoModel;
-    TextView tvTransMultiModel;
-    Button bRestart;
+    TextView tvFiles;
+    TextView tvTotal;
+    TextView tvError;
+    TextView tvCharged;
+    TextView tvNoOrMultiModel;
+    TextView tvAlreadyCharged;
     ViewPager mViewPager;
 
     // Variables
     private ArrayList<Source> mSources;
-    final ArrayList<Transaction> mNo_Model = new ArrayList<Transaction>();
-    final ArrayList<Transaction> mMultiple_Model = new ArrayList<Transaction>();
+    final ArrayList<Transaction> mManuals = new ArrayList<Transaction>();
     String mLastUrl;
     PagerAdapter_ChargeTransactions mAdapter;
+
+    // Counter
+    private int cFiles = 0;
+    private int cTotal = 0;
+    private int cAlreadyCharged = 0;
+    private int cError = 0;
+    private int cCharged = 0;
+    private int cNoOrMultipleModel = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +71,7 @@ public class Activity_Update extends AppCompatActivity {
         setLayout();
 
         // Set up Adapter
-        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), mNo_Model);
+        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), mManuals);
         mViewPager.setAdapter(mAdapter);
 
         // Update
@@ -73,19 +80,18 @@ public class Activity_Update extends AppCompatActivity {
     }
 
     private void setLayout() {
-        tvTransCharged = findViewById(R.id.tvChargedTransactions);
-        tvTransNoModel = findViewById(R.id.tvTransactionsNoModel);
-        tvTransMultiModel = findViewById(R.id.tvTransactionsNoModel);
-        bRestart = findViewById(R.id.bRestart);
+        tvCharged = findViewById(R.id.tvChargedTransactions);
+        tvNoOrMultiModel = findViewById(R.id.tvTransactionsNoOrMultipleModel);
+        tvAlreadyCharged = findViewById(R.id.tvAlreadyChargedTransactions);
+        tvError = findViewById(R.id.tvError);
+        tvFiles = findViewById(R.id.tvFiles);
+        tvTotal = findViewById(R.id.tvTotal);
         mViewPager = findViewById(R.id.viewPager);
-    }
-
-    public void updateAdapter() {
-
     }
 
     public void processTransactions() {
         mLastUrl = "";
+        int counter = 0;
 
         // Check if there ara any transaction files
         Calendar calendar = Calendar.getInstance();
@@ -114,8 +120,8 @@ public class Activity_Update extends AppCompatActivity {
         for (final Transaction transaction : transactions) {
             counter++;
 
-            RequestQueue queue = null;
-            queue = Volley.newRequestQueue(this);
+            //RequestQueue queue = null;
+            //queue = Volley.newRequestQueue(this);
             final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/operations.php/processTransaction";
             final JSONObject jsonBody = new JSONObject();
             try {
@@ -123,7 +129,7 @@ public class Activity_Update extends AppCompatActivity {
                 jsonBody.put("name", transaction.getName());
                 jsonBody.put("type", transaction.getType());
                 jsonBody.put("detail_one", transaction.getDetailOne());
-                jsonBody.put("detail_two", transaction.getDetailOne());
+                jsonBody.put("detail_two", transaction.getDetailTwo());
                 jsonBody.put("amount", transaction.getAmount());
                 jsonBody.put("date", transaction.getDate());
                 final String requestBody = jsonBody.toString();
@@ -136,14 +142,22 @@ public class Activity_Update extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.NO_MODEL)) {
                                 // Save transaction in separate ArrayList
-                                mNo_Model.add(transaction);
+                                tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel++));
+                                mManuals.add(transaction);
                                 mAdapter.notifyDataSetChanged();
 
                             }
                             if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
                                 // Fusion with separate ArrayList
-                                mMultiple_Model.add(transaction);
-
+                                tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel++));
+                                mManuals.add(transaction);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_ALREADY_CHARGED)) {
+                                tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged++));
+                            }
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_CHARGED)) {
+                                tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -151,7 +165,7 @@ public class Activity_Update extends AppCompatActivity {
                         Log.i("url", transactionUrl);
                         Log.i("url", mLastUrl);
                         if (transactionUrl.equals(mLastUrl)) {
-                            Log.i("Last Call", Integer.toString(mNo_Model.size()));
+                            Log.i("Last Call", Integer.toString(mManuals.size()));
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -184,14 +198,9 @@ public class Activity_Update extends AppCompatActivity {
                         return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
                     }
                 };
-                queue.add(stringRequest);
-                queue.getCache().clear();
-
-                if (counter == 5) {
-                    break;
-                }
-
-
+                AppController.getInstance().addToRequestQueue(stringRequest, "tag_str_req");
+                //queue.add(stringRequest);
+                //queue.getCache().clear();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -211,6 +220,8 @@ public class Activity_Update extends AppCompatActivity {
 
         protected ArrayList<Transaction> doInBackground(String... urls) {
 
+            int counter = 0;
+
             // Initiate return variable
             ArrayList<Transaction> transactions = new ArrayList<Transaction>();
             mUrl = urls[0];
@@ -219,24 +230,78 @@ public class Activity_Update extends AppCompatActivity {
             InputStream inputStream = null;
             try {
                 inputStream = new URL(urls[0]).openStream();
+                cFiles++;
             } catch (Exception e) {
-                //Log.i("Failure", urls[0]);
+                cError++;
             }
             if (inputStream != null) {
-                Log.i("Succes", "Found file");
                 // Read Data into return variable
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "ISO-8859-1"));
 
                     reader.readLine(); // jump first line - It's just the header
                     String csvLine;
+                    int rowNumber = 0;
                     while ((csvLine = reader.readLine()) != null) {
+                        rowNumber++;
                         String[] row = csvLine.split(";");
                         ArrayList<String> arrayLine = new ArrayList<>();
                         for (String eachWord : row) //Iterate each String from the array
                             arrayLine.add(eachWord);
-                        double amount = Double.parseDouble(arrayLine.get(mSource.getAmountPosition()).replace(",", ".").replaceAll("€, £", ""));
-                        transactions.add(new Transaction(arrayLine.get(mSource.getCodePosition()), arrayLine.get(mSource.getNamePosition()), arrayLine.get(mSource.getTypePosition()), mSource.getDetailOnePosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailOnePosition()), mSource.getDetailTwoPosition() == 0 ? "empty" : arrayLine.get(mSource.getDetailTwoPosition()), amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())), mSource.getBankAccountId()));
+                        if (arrayLine.size() > 0) {
+                            String a;
+                            try {
+                                a = arrayLine.get(mSource.getAmountPosition()).replace(",", ".");
+                            } catch (IndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                                Log.i("ErrorCode1:", arrayLine.toString());
+                                cError++;
+                                continue;
+                            }
+
+                            if (mSource.getBankAccountId() == 5) a = a.substring(1); // UK
+                            double amount;
+                            amount = Double.parseDouble(a);
+
+                            String code;
+                            try {
+                                code = mSource.buildCode(arrayLine, rowNumber);
+                            } catch (IndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                                Log.i("ErrorCode3:", arrayLine.toString());
+                                cError++;
+                                continue;
+                            }
+
+                            Log.i("Code", code);
+                            String name;
+                            if (mSource.getFileName().matches("Amazon.*") && arrayLine.size() < 8) {
+                                Log.i("Triggered", "Error");
+                                Log.i("TriggeredWhat", arrayLine.toString());
+                                name = Constants_Network.EMPTY;
+                            } else {
+                                name = ((arrayLine.get(mSource.getNamePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getNamePosition());
+                            }
+                            try {
+                                transactions.add(new Transaction(code, name,
+                                        ((arrayLine.get(mSource.getTypePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getTypePosition()),
+                                        (mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition()),
+                                        (mSource.getDetailTwoPosition() == 0 || (arrayLine.get(mSource.getDetailTwoPosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailTwoPosition()),
+                                        amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())), mSource.getBankAccountId()));
+                            } catch (IndexOutOfBoundsException e) {
+                                e.printStackTrace();
+                                Log.i("ErrorCode2:", arrayLine.toString());
+                                Log.i("Goo", "Code: "+ code+ " DetailOne: "+ ((mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition())+ " Name: "+ name));
+                                Log.i("DATEPROB: ", arrayLine.get(mSource.getDatePosition()));
+                                cError++;
+                                if (arrayLine.get(1).isEmpty()) {
+                                    Log.i("ErrorCode2-Test", "isEmpty()");
+                                }
+                                if (arrayLine.get(1).equals("")) {
+                                    Log.i("ErrorCode2-Test", "equals()");
+                                }
+                            }
+                        }
                     }
                 } catch (IOException ex) {
                     throw new RuntimeException("Error in reading CSV file: " + ex);
@@ -252,7 +317,13 @@ public class Activity_Update extends AppCompatActivity {
         }
 
         protected void onPostExecute(ArrayList<Transaction> t) {
-            if (t.size() > 0) operateTransactions(t, mUrl);
+            if (t.size() > 0) {
+                tvFiles.setText(getString(R.string.number_files)+Integer.toString(cFiles));
+                cTotal = cTotal+t.size();
+                tvTotal.setText(getString(R.string.transactions_total)+Integer.toString(cTotal));
+                tvError.setText(getString(R.string.number_error)+Integer.toString(cError));
+                operateTransactions(t, mUrl);
+            }
         }
     }
 
@@ -264,14 +335,21 @@ public class Activity_Update extends AppCompatActivity {
 
     private ArrayList<Source> createSources() {
         ArrayList<Source> sources = new ArrayList<>();
-        sources.add(new Source("Amazon_DE", 1, 8, 3, 4, 0, 6, 1, 4));
-        sources.add(new Source("Amazon_UK", 1, 8, 3, 4, 0, 6, 1, 5));
-        sources.add(new Source("Amazon_ES", 1, 8, 3, 4, 0, 6, 1, 6));
+        sources.add(new Source("Amazon_DE", 1, 8, 3, 4, 0, 6, 0, 4));
+        sources.add(new Source("Amazon_UK", 1, 8, 3, 4, 0, 6, 0, 5));
+        sources.add(new Source("Amazon_ES", 1, 8, 3, 4, 0, 6, 0, 6));
         sources.add(new Source("Commerzbank_4600", 3, 3, 2, 0, 0, 4, 1, 1));
         sources.add(new Source("Commerzbank_9200", 3, 3, 2, 0, 0, 4, 1, 2));
         sources.add(new Source("Commerzbank_4500", 3, 3, 2, 0, 0, 4, 1, 3));
         sources.add(new Source("Paypal", 12, 3, 4, 15, 5, 8, 0, 7));
         //sources.add(new Source("GLS", 2, 9, 4, 5, 0, 9, 1, 8));
         return sources;
+    }
+
+    public void manuallyCharged(Transaction transaction) {
+        tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
+        tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel--));
+        mManuals.remove(transaction);
+        mAdapter.notifyDataSetChanged();
     }
 }

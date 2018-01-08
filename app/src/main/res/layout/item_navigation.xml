@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image_view"
+        style="@style/image_view_navigation"
+        android:src="@drawable/ic_calendar_24dp"/>
+
+    <TextView
+        android:id="@+id/tvName"
+        style="@style/text_view_navigation"
+        android:layout_toRightOf="@id/image_view"
+        android:text="2018"/>
+
+    <TextView
+        style="@style/text_view_navigation"
+        android:layout_alignParentRight="true"
+        android:text="712.957 €"/>
+
+</RelativeLayout>

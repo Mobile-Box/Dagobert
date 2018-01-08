@@ -44,6 +44,19 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="tv_balancesheet" >
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textSize">@dimen/text_size_standard</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="tv_balancesheet_header" parent="tv_balancesheet" >
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Edit Texts -->
     <style name="edittext_standard">
         <item name="android:layout_height">wrap_content</item>
@@ -76,6 +89,29 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <!-- Navigation Drawer -->
+    <style name="image_view_navigation">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="text_view_navigation">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_standard</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="text_view_navigation_subitem" parent="text_view_navigation">
+        <item name="android:textSize">@dimen/text_size_subitem</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>

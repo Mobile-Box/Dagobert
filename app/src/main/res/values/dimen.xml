@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_size_standard">11sp</dimen>
+    <dimen name="text_size_subitem">10sp</dimen>
     <dimen name="text_size_header">14sp</dimen>
 
 </resources>
