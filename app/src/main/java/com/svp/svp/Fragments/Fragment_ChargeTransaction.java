@@ -200,7 +200,7 @@ public class Fragment_ChargeTransaction extends Fragment {
                     Log.i("Response - Charge", response);
                     try {
                         JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_CHARGED)){
+                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)){
                             ((Activity_Update)getActivity()).manuallyCharged(mTransaction);
 
                         }

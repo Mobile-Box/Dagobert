@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.svp.svp.Adapter.ListAdapter_NavigationDates;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Fragments.Fragment_BalanceSheet;
 import com.svp.svp.Objects.Navigation_Date;
@@ -62,8 +61,8 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
             dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
         }
 
-        ListAdapter_NavigationDates adapter = new ListAdapter_NavigationDates(dates);
-        mRecyclerView.setAdapter(adapter);
+        //ListAdapter_NavigationDates adapter = new ListAdapter_NavigationDates(dates);
+        //mRecyclerView.setAdapter(adapter);
 
         // Add Fragment
         Fragment_BalanceSheet fragment = new Fragment_BalanceSheet();

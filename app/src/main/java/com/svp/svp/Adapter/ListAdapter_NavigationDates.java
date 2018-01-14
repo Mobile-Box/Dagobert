@@ -1,17 +1,11 @@
 package com.svp.svp.Adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
-
-import com.svp.svp.Objects.Navigation_Date;
-
-import java.util.ArrayList;
-
 /**
  * Created by Eric Schumacher on 04.01.2018.
  */
 
-public class ListAdapter_NavigationDates extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ListAdapter_NavigationDates {/*extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
 
     ArrayList<Navigation_Date> mDates;
 
@@ -33,4 +27,5 @@ public class ListAdapter_NavigationDates extends RecyclerView.Adapter<RecyclerVi
     public int getItemCount() {
         return mDates.size();
     }
+    */
 }

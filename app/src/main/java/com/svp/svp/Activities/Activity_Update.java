@@ -79,6 +79,15 @@ public class Activity_Update extends AppCompatActivity {
         processTransactions();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (cCharged > 0) {
+            // Calculate taxes
+
+        }
+    }
+
     private void setLayout() {
         tvCharged = findViewById(R.id.tvChargedTransactions);
         tvNoOrMultiModel = findViewById(R.id.tvTransactionsNoOrMultipleModel);
@@ -153,10 +162,14 @@ public class Activity_Update extends AppCompatActivity {
                                 mManuals.add(transaction);
                                 mAdapter.notifyDataSetChanged();
                             }
-                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_ALREADY_CHARGED)) {
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
+
                                 tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged++));
+                                Log.i("Fuck2", Integer.toString(cAlreadyCharged++));
+                                tvAlreadyCharged.setText("Fuck");
                             }
-                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_CHARGED)) {
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
+                                Log.i("Fuck", Integer.toString(cCharged++));
                                 tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
                             }
                         } catch (JSONException e) {
@@ -232,7 +245,9 @@ public class Activity_Update extends AppCompatActivity {
                 inputStream = new URL(urls[0]).openStream();
                 cFiles++;
             } catch (Exception e) {
-                cError++;
+                Log.i("ErrorCode5: ", "error");
+                e.printStackTrace();
+                //cError++;
             }
             if (inputStream != null) {
                 // Read Data into return variable
@@ -251,13 +266,16 @@ public class Activity_Update extends AppCompatActivity {
                         if (arrayLine.size() > 0) {
                             String a;
                             try {
-                                a = arrayLine.get(mSource.getAmountPosition()).replace(",", ".");
+                                a = arrayLine.get(mSource.getAmountPosition()).replace(".", "");
+                                a = a.replace(",", ".");
                             } catch (IndexOutOfBoundsException e) {
                                 e.printStackTrace();
                                 Log.i("ErrorCode1:", arrayLine.toString());
                                 cError++;
                                 continue;
                             }
+
+                            Log.i("Show", arrayLine.toString());
 
                             if (mSource.getBankAccountId() == 5) a = a.substring(1); // UK
                             double amount;
@@ -274,14 +292,27 @@ public class Activity_Update extends AppCompatActivity {
                             }
 
                             Log.i("Code", code);
-                            String name;
-                            if (mSource.getFileName().matches("Amazon.*") && arrayLine.size() < 8) {
+                            String name="";
+                            if (mSource.getFileName().matches("Amazon.*") && arrayLine.size() < 9) {
                                 Log.i("Triggered", "Error");
                                 Log.i("TriggeredWhat", arrayLine.toString());
                                 name = Constants_Network.EMPTY;
                             } else {
-                                name = ((arrayLine.get(mSource.getNamePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getNamePosition());
+                                if (mSource.getFileName().matches("GLS.*")) {
+
+                                    for (int i = 5; i<19; i++) {
+                                        name = name + arrayLine.get(i);
+                                    }
+                                    Log.i("OHHHH", "name");
+                                    Log.i("GLSWhat", arrayLine.toString());
+                                } else {
+                                    name = ((arrayLine.get(mSource.getNamePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getNamePosition());
+                                }
                             }
+
+                            name = name.replace("'", "");
+                            // Get rid of all " ' " signs
+
                             try {
                                 transactions.add(new Transaction(code, name,
                                         ((arrayLine.get(mSource.getTypePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getTypePosition()),
@@ -342,7 +373,7 @@ public class Activity_Update extends AppCompatActivity {
         sources.add(new Source("Commerzbank_9200", 3, 3, 2, 0, 0, 4, 1, 2));
         sources.add(new Source("Commerzbank_4500", 3, 3, 2, 0, 0, 4, 1, 3));
         sources.add(new Source("Paypal", 12, 3, 4, 15, 5, 8, 0, 7));
-        //sources.add(new Source("GLS", 2, 9, 4, 5, 0, 9, 1, 8));
+        sources.add(new Source("GLS", 2, 6, 4, 3, 0, 19, 2, 8));
         return sources;
     }
 
