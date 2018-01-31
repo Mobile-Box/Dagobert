@@ -17,4 +17,19 @@ public class Constants_Network {
     public static final String MODEL_ADDED = "MODEL_ADDED";
     public static final String MODEL_EXISTS = "MODEL_EXISTS";
     public static final String EMPTY = "EMPTY";
+
+    // Balance-Sheet
+    public static final String BS_TYPE = "BS_TYPE";
+    public static final String BS_NAME = "BS_NAME";
+    public static final String BS_AMOUNT = "BS_AMOUNT";
+    public static final String BS_ID = "BS_ID";
+
+    public static final String BS_TYPE_ACCOUNT = "BS_TYPE_ACCOUNT";
+    public static final String BS_TYPE_SUBACCOUNT = "BS_TYPE_SUBACCOUNT";
+    public static final String BS_TYPE_OPERATION = "BS_TYP_OPERATION";
+    public static final String BS_TYPE_PROFIT_BT = "BS_TYPE_PROFIT_BT";
+    public static final String BS_TYPE_PROFIT_AT = "BS_TYPE_PROFIT_AT";
+    public static final String BS_TYPE_TAX_UMSATZSTEUER = "BS_TYPE_UMSATZSTEUER";
+    public static final String BS_TYPE_TAX_UNTERNEHMENSSTEUER = "BS_TYPE_UNTERNEHMENSSTEUER";
+    public static final String BS_TYPE_TAX_GEWERBESTEUER = "BS_TYPE_GEWERBESTEUER";
 }

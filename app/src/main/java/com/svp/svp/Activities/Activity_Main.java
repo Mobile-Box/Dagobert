@@ -5,22 +5,26 @@ package com.svp.svp.Activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.svp.svp.Adapter.ListAdapter_Navigation_Dates;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Fragments.Fragment_BalanceSheet;
-import com.svp.svp.Objects.Navigation_Date;
-import com.svp.svp.Objects.Navigation_Month;
-import com.svp.svp.Objects.Navigation_Year;
+import com.svp.svp.Objects.Navigation.Navigation_Date;
+import com.svp.svp.Objects.Navigation.Navigation_Month;
+import com.svp.svp.Objects.Navigation.Navigation_Year;
 import com.svp.svp.R;
 
 import java.util.ArrayList;
@@ -39,6 +43,9 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
     FrameLayout mContainer;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    // Variables
+    FragmentManager mFragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,29 +53,14 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         // Layout
         setUpLayout();
 
-        // Navigation
+        // Variables
+        mFragmentManager = getSupportFragmentManager();
 
-        Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.MONTH) == 0) calendar.add(Calendar.YEAR, -1);
-        ArrayList<Navigation_Date> dates = new ArrayList<>();
-        dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
-        for (int i = calendar.get(Calendar.MONTH); i >= 0; i--) {
-            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
-        }
-        calendar.add(Calendar.YEAR, -1);
-        dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
-        for (int i = 11; i >= Constants_Intern.NAVIGATION_LAST_MONTH; i--) {
-            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
-        }
+        // Navigation Adapter
+        ListAdapter_Navigation_Dates adapter = new ListAdapter_Navigation_Dates(this, buildDates());
+        mRecyclerView.setAdapter(adapter);
 
-        //ListAdapter_NavigationDates adapter = new ListAdapter_NavigationDates(dates);
-        //mRecyclerView.setAdapter(adapter);
 
-        // Add Fragment
-        Fragment_BalanceSheet fragment = new Fragment_BalanceSheet();
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, fragment);
-        transaction.commit();
     }
 
     @Override
@@ -140,5 +132,41 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
                 break;
 
         }
+    }
+
+    public void buildBalanceSheetFragment(String type, Navigation_Date date) {
+        // Add Fragment
+        Fragment_BalanceSheet fragment = new Fragment_BalanceSheet();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants_Intern.NAVIGATION_DATE, date);
+        bundle.putString(Constants_Intern.BALANCESHEET_TYPE, type);
+        fragment.setArguments(bundle);
+        openFragment(fragment);
+    }
+
+    private void openFragment(Fragment fragment) {
+        android.support.v4.app.FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.frame_layout, fragment);
+        transaction.commit();
+        mDrawer.closeDrawer(Gravity.LEFT);
+    }
+
+    private ArrayList<Navigation_Date> buildDates() {
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.MONTH) == 0) {
+            calendar.add(Calendar.YEAR, -1);
+            calendar.set(Calendar.MONTH, 11);
+        }
+        ArrayList<Navigation_Date> dates = new ArrayList<>();
+        dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
+        for (int i = calendar.get(Calendar.MONTH); i >= 0; i--) {
+            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
+        }
+        calendar.add(Calendar.YEAR, -1);
+        dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
+        for (int i = 11; i >= Constants_Intern.NAVIGATION_LAST_MONTH; i--) {
+            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
+        }
+        return dates;
     }
 }

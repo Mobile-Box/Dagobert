@@ -3,11 +3,34 @@ package com.svp.svp.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
+import com.svp.svp.Adapter.ListAdapter_BalanceSheets;
+import com.svp.svp.Constants.Constants_Intern;
+import com.svp.svp.Constants.Constants_Network;
+import com.svp.svp.Objects.BalanceSheet.BalanceSheet;
+import com.svp.svp.Objects.BalanceSheet.BalanceSheet_Account;
+import com.svp.svp.Objects.Navigation.Navigation_Month;
+import com.svp.svp.Objects.Navigation.Navigation_Year;
 import com.svp.svp.R;
+import com.svp.svp.Volley.AppController;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Eric Schumacher on 31.12.2017.
@@ -17,12 +40,88 @@ public class Fragment_BalanceSheet extends Fragment {
 
     // Layout
     View mLayout;
+    RecyclerView mRecyclerView;
+
+    // Variables
+    ArrayList<BalanceSheet> mBS;
+    ListAdapter_BalanceSheets mAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        // Layout
         mLayout = inflater.inflate(R.layout.fragment_balance_sheet, container, false);
+        setLayout();
+
+        // Get URL
+        String url = buildUrl();
+
+        // Get balanceSheet content and fill Adapter with it
+        mBS = new ArrayList<>();
+        mAdapter = new ListAdapter_BalanceSheets(getActivity(), mBS);
+        mRecyclerView.setAdapter(mAdapter);
+        final JSONObject jsonBody = new JSONObject();
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    mBS.clear();
+                    Log.i("ResponseFromServer", response);
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i=0; i<jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            if (jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_ACCOUNT)) {
+                                BalanceSheet_Account bs_account = new BalanceSheet_Account(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), jsonObject.getDouble(Constants_Network.BS_AMOUNT), jsonObject.getInt(Constants_Network.BS_ID));
+                                mBS.add(bs_account);
+                            } else {
+                                BalanceSheet bs = new BalanceSheet(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), (jsonObject.get(Constants_Network.BS_AMOUNT) !=null) ? jsonObject.getDouble(Constants_Network.BS_AMOUNT) : 111111);
+                                mBS.add(bs);
+                            }
+                            mAdapter.notifyDataSetChanged();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+                }}) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null && response.statusCode == 200) {
+                        responseString = new String(response.data);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            AppController.getInstance().addToRequestQueue(stringRequest, "tag_str_req");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return mLayout;
     }
+
+    private void setLayout() {
+        mRecyclerView = mLayout.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private String buildUrl() {
+        String urlStart = "http://svp-server.com/svp-gmbh/dagobert/src/routes/api.php/balanceSheet";
+        return urlStart+"/"+getArguments().getString(Constants_Intern.BALANCESHEET_TYPE)+"/"+(getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE) instanceof Navigation_Month ? Integer.toString((((Navigation_Month) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear()))+"/"+Integer.toString(((Navigation_Month)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getMonth()) : Integer.toString((((Navigation_Year) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear())));
+    }
+
+
 }

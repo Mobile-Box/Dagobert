@@ -141,6 +141,7 @@ public class Activity_Update extends AppCompatActivity {
                 jsonBody.put("detail_two", transaction.getDetailTwo());
                 jsonBody.put("amount", transaction.getAmount());
                 jsonBody.put("date", transaction.getDate());
+                jsonBody.put("id_bank_account", transaction.getBankAccountId());
                 final String requestBody = jsonBody.toString();
                 Log.i("RequestBody " + Integer.toString(counter), requestBody);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -199,6 +200,8 @@ public class Activity_Update extends AppCompatActivity {
                         } catch (UnsupportedEncodingException uee) {
                             VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
                             return null;
+                        } finally {
+
                         }
                     }
 

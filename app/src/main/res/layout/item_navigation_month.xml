@@ -2,16 +2,16 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id="@+id/rlItem">
 
     <TextView
-        android:id="@+id/tvName"
+        android:id="@+id/tvDate"
         style="@style/text_view_navigation_subitem"
-        android:layout_toRightOf="@id/ivClaims"
         android:text="September" />
 
     <TextView
-        android:id="@+id/tvValue"
+        android:id="@+id/tvAmount"
         style="@style/text_view_navigation_subitem"
         android:layout_alignParentRight="true"
         android:text="21.865 €" />

@@ -39,7 +39,7 @@ public class Source {
     }
 
     public String buildCode(ArrayList<String> line, int rowNumber) {
-        if (fileName.matches("Commerzbank.*") || fileName.matches("GLS.*") || line.get(codePosition).isEmpty()) {
+        if (fileName.matches("Commerzbank.*") || fileName.matches("GLS.*") || fileName.matches("Amazon.*") || line.get(codePosition).isEmpty()) {
             String code = Integer.toString(bankAccountId) + line.get(datePosition).replace(".", "") + Integer.toString(rowNumber);
             return code;
         } else {
