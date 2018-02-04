@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.svp.svp.Adapter.ListAdapter_Navigation_Dates;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Fragments.Fragment_BalanceSheet;
+import com.svp.svp.Interfaces.Interface_BalanceSheetFragment;
 import com.svp.svp.Objects.Navigation.Navigation_Date;
 import com.svp.svp.Objects.Navigation.Navigation_Month;
 import com.svp.svp.Objects.Navigation.Navigation_Year;
@@ -30,7 +31,7 @@ import com.svp.svp.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Activity_Main extends AppCompatActivity implements View.OnClickListener {
+public class Activity_Main extends AppCompatActivity implements View.OnClickListener, Interface_BalanceSheetFragment {
 
     // Layout
     TextView tvOutput;
@@ -134,12 +135,13 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void buildBalanceSheetFragment(String type, Navigation_Date date) {
+    public void buildBalanceSheetFragment(String type, Navigation_Date date, int id) {
         // Add Fragment
         Fragment_BalanceSheet fragment = new Fragment_BalanceSheet();
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants_Intern.NAVIGATION_DATE, date);
         bundle.putString(Constants_Intern.BALANCESHEET_TYPE, type);
+        bundle.putInt(Constants_Intern.ID, id);
         fragment.setArguments(bundle);
         openFragment(fragment);
     }
@@ -160,12 +162,12 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         ArrayList<Navigation_Date> dates = new ArrayList<>();
         dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
         for (int i = calendar.get(Calendar.MONTH); i >= 0; i--) {
-            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
+            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i+1));
         }
         calendar.add(Calendar.YEAR, -1);
         dates.add(new Navigation_Year(calendar.get(Calendar.YEAR)));
         for (int i = 11; i >= Constants_Intern.NAVIGATION_LAST_MONTH; i--) {
-            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i));
+            dates.add(new Navigation_Month(calendar.get(Calendar.YEAR), i+1));
         }
         return dates;
     }

@@ -8,6 +8,7 @@ public class Constants_Intern {
 
     public static final String TRANSACTION = "TRANSACTION";
     public static final String URL = "URL";
+    public static final String ID = "ID";
 
     // App Navigation
     public static final String NAVIGATION_DATE = "NAVIGATION_DATE";

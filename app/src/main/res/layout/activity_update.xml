@@ -24,7 +24,7 @@
         <TextView
             style="@style/textview_standard_center"
             android:id="@+id/tvAlreadyChargedTransactions"
-            android:text="Already charged: 70"/>
+            android:text="Already charged: 0"/>
 
     </LinearLayout>
 

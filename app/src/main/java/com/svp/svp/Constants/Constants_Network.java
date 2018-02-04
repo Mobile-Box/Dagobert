@@ -26,7 +26,7 @@ public class Constants_Network {
 
     public static final String BS_TYPE_ACCOUNT = "BS_TYPE_ACCOUNT";
     public static final String BS_TYPE_SUBACCOUNT = "BS_TYPE_SUBACCOUNT";
-    public static final String BS_TYPE_OPERATION = "BS_TYP_OPERATION";
+    public static final String BS_TYPE_OPERATION = "BS_TYPE_OPERATION";
     public static final String BS_TYPE_PROFIT_BT = "BS_TYPE_PROFIT_BT";
     public static final String BS_TYPE_PROFIT_AT = "BS_TYPE_PROFIT_AT";
     public static final String BS_TYPE_TAX_UMSATZSTEUER = "BS_TYPE_UMSATZSTEUER";

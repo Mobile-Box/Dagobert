@@ -41,7 +41,7 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
         ClickInterface clickInterface = new ClickInterface() {
             @Override
             public void onClick(int position) {
-                ((Activity_Main)mContext).buildBalanceSheetFragment(Constants_Intern.BALANCESHEET_TYPE_ACCOUNTS, mDates.get(position));
+                ((Activity_Main)mContext).buildBalanceSheetFragment(Constants_Intern.BALANCESHEET_TYPE_ACCOUNTS, mDates.get(position), 0);
             }
         };
         if (viewType == TYPE_YEAR) {

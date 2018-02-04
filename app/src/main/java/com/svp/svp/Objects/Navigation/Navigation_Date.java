@@ -10,10 +10,10 @@ import java.text.DateFormatSymbols;
 public abstract class Navigation_Date implements Serializable {
 
     public String getName(int dateValue) {
-        if (dateValue > 11) {
+        if (dateValue > 12) {
             return Integer.toString(dateValue);
         } else {
-            return  new DateFormatSymbols().getMonths()[dateValue];
+            return  new DateFormatSymbols().getMonths()[dateValue-1];
         }
     }
 

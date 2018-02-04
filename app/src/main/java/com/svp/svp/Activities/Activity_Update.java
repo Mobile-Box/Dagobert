@@ -61,6 +61,7 @@ public class Activity_Update extends AppCompatActivity {
     // Counter
     private int cFiles = 0;
     private int cTotal = 0;
+    private int cALL;
     private int cAlreadyCharged = 0;
     private int cError = 0;
     private int cCharged = 0;
@@ -71,6 +72,7 @@ public class Activity_Update extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
         setLayout();
+        cALL = 0;
 
         // Set up Adapter
         mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), mManuals);
@@ -126,14 +128,19 @@ public class Activity_Update extends AppCompatActivity {
 
     private void operateTransactions(ArrayList<Transaction> transactions, final String transactionUrl) {
         int counter = 0;
-
+        Log.i("Before", Integer.toString(cALL));
+        Log.i("Transaction", Integer.toString(transactions.size()));
+        Log.i("together", Integer.toString((cALL+transactions.size())));
+        Integer newest = new Integer(cALL+transactions.size());
+        cALL = newest;
+        Log.i("After", Integer.toString(newest));
 
         for (final Transaction transaction : transactions) {
             counter++;
 
             //RequestQueue queue = null;
             //queue = Volley.newRequestQueue(this);
-            final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/operations.php/processTransaction";
+            final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/processTransaction";
             final JSONObject jsonBody = new JSONObject();
             try {
                 jsonBody.put("code", transaction.getCode());
@@ -168,11 +175,11 @@ public class Activity_Update extends AppCompatActivity {
                             if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
 
                                 tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged++));
-                                Log.i("Fuck2", Integer.toString(cAlreadyCharged++));
-                                tvAlreadyCharged.setText("Fuck");
+                                //Log.i("Fuck2", Integer.toString(cAlreadyCharged++));
+                                //tvAlreadyCharged.setText("Fuck");
                             }
                             if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
-                                Log.i("Fuck", Integer.toString(cCharged++));
+                                //Log.i("Fuck", Integer.toString(cCharged++));
                                 tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
                             }
                         } catch (JSONException e) {
@@ -264,6 +271,8 @@ public class Activity_Update extends AppCompatActivity {
                     int rowNumber = 0;
                     while ((csvLine = reader.readLine()) != null) {
                         rowNumber++;
+                        cTotal++;
+                        Log.i("Tottal:", Integer.toString(cTotal));
                         String[] row = csvLine.split(";");
                         ArrayList<String> arrayLine = new ArrayList<>();
                         for (String eachWord : row) //Iterate each String from the array
@@ -355,8 +364,7 @@ public class Activity_Update extends AppCompatActivity {
         protected void onPostExecute(ArrayList<Transaction> t) {
             if (t.size() > 0) {
                 tvFiles.setText(getString(R.string.number_files)+Integer.toString(cFiles));
-                cTotal = cTotal+t.size();
-                tvTotal.setText(getString(R.string.transactions_total)+Integer.toString(cTotal));
+                tvTotal.setText(Integer.toString(cTotal));
                 tvError.setText(getString(R.string.number_error)+Integer.toString(cError));
                 operateTransactions(t, mUrl);
             }

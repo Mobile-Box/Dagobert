@@ -21,6 +21,7 @@ import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.BalanceSheet.BalanceSheet;
 import com.svp.svp.Objects.BalanceSheet.BalanceSheet_Account;
+import com.svp.svp.Objects.Navigation.Navigation_Date;
 import com.svp.svp.Objects.Navigation.Navigation_Month;
 import com.svp.svp.Objects.Navigation.Navigation_Year;
 import com.svp.svp.R;
@@ -43,7 +44,7 @@ public class Fragment_BalanceSheet extends Fragment {
     RecyclerView mRecyclerView;
 
     // Variables
-    ArrayList<BalanceSheet> mBS;
+    ArrayList<BalanceSheet> mListBalanceSheet;
     ListAdapter_BalanceSheets mAdapter;
 
     @Nullable
@@ -56,28 +57,29 @@ public class Fragment_BalanceSheet extends Fragment {
 
         // Get URL
         String url = buildUrl();
+        Log.i("MyUrl: ", url);
 
         // Get balanceSheet content and fill Adapter with it
-        mBS = new ArrayList<>();
-        mAdapter = new ListAdapter_BalanceSheets(getActivity(), mBS);
+        mListBalanceSheet = new ArrayList<>();
+        mAdapter = new ListAdapter_BalanceSheets(getActivity(), mListBalanceSheet);
         mRecyclerView.setAdapter(mAdapter);
         final JSONObject jsonBody = new JSONObject();
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    mBS.clear();
+                    mListBalanceSheet.clear();
                     Log.i("ResponseFromServer", response);
                     try {
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i=0; i<jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_ACCOUNT)) {
-                                BalanceSheet_Account bs_account = new BalanceSheet_Account(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), jsonObject.getDouble(Constants_Network.BS_AMOUNT), jsonObject.getInt(Constants_Network.BS_ID));
-                                mBS.add(bs_account);
+                            if (jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_ACCOUNT) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_SUBACCOUNT) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_OPERATION)) {
+                                BalanceSheet_Account bs_account = new BalanceSheet_Account(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), jsonObject.getDouble(Constants_Network.BS_AMOUNT), jsonObject.getInt(Constants_Network.BS_ID), (Navigation_Date)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE));
+                                mListBalanceSheet.add(bs_account);
                             } else {
-                                BalanceSheet bs = new BalanceSheet(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), (jsonObject.get(Constants_Network.BS_AMOUNT) !=null) ? jsonObject.getDouble(Constants_Network.BS_AMOUNT) : 111111);
-                                mBS.add(bs);
+                                BalanceSheet bs = new BalanceSheet(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), (jsonObject.get(Constants_Network.BS_AMOUNT) !=null) ? jsonObject.getDouble(Constants_Network.BS_AMOUNT) : 111111, (Navigation_Date)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE));
+                                mListBalanceSheet.add(bs);
                             }
                             mAdapter.notifyDataSetChanged();
 
@@ -120,7 +122,7 @@ public class Fragment_BalanceSheet extends Fragment {
 
     private String buildUrl() {
         String urlStart = "http://svp-server.com/svp-gmbh/dagobert/src/routes/api.php/balanceSheet";
-        return urlStart+"/"+getArguments().getString(Constants_Intern.BALANCESHEET_TYPE)+"/"+(getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE) instanceof Navigation_Month ? Integer.toString((((Navigation_Month) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear()))+"/"+Integer.toString(((Navigation_Month)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getMonth()) : Integer.toString((((Navigation_Year) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear())));
+        return urlStart+"/"+getArguments().getString(Constants_Intern.BALANCESHEET_TYPE)+"/"+getArguments().getInt(Constants_Intern.ID)+"/"+(getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE) instanceof Navigation_Month ? Integer.toString((((Navigation_Month) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear()))+"/"+Integer.toString(((Navigation_Month)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getMonth()) : Integer.toString((((Navigation_Year) getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE)).getYear())));
     }
 
 

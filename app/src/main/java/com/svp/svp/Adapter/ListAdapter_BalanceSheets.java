@@ -2,12 +2,16 @@ package com.svp.svp.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.svp.svp.Activities.Activity_Main;
+import com.svp.svp.Constants.Constants_Network;
+import com.svp.svp.Interfaces.Interface_BalanceSheetFragment;
 import com.svp.svp.Interfaces.Interface_Click;
 import com.svp.svp.Objects.BalanceSheet.BalanceSheet;
 import com.svp.svp.Objects.BalanceSheet.BalanceSheet_Account;
@@ -21,16 +25,22 @@ import java.util.ArrayList;
 
 public class ListAdapter_BalanceSheets extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // Types
     private static final int TYPE_BALANCESHEET = 0;
-    private static final int TYPE_BALANCESHEET_ACCOUNT = 1;
+    private static final int TYPE_BALANCESHEET_LINKED = 1;
 
+    // Variables
     Context mContext;
     LayoutInflater mLayoutInflater;
     ArrayList<BalanceSheet> mBS;
 
+    // Interface
+    Interface_BalanceSheetFragment iBalanceSheetFragment;
+
     public ListAdapter_BalanceSheets(Context context, ArrayList<BalanceSheet> bs) {
         mBS = bs;
         mContext = context;
+        iBalanceSheetFragment = (Activity_Main)context;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -42,14 +52,17 @@ public class ListAdapter_BalanceSheets extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onCick(int position) {
                         // do nothing here
+                        Log.i("TYYPE: ", "WhATT");
                     }
                 });
                 return holder;
-            case TYPE_BALANCESHEET_ACCOUNT:
+            case TYPE_BALANCESHEET_LINKED:
                 Holder_BalanceSheet_Account holder_account = new Holder_BalanceSheet_Account(mLayoutInflater.inflate(R.layout.item_balance_sheet, parent, false), new Interface_Click() {
                     @Override
                     public void onCick(int position) {
-                        // open SubAccounts
+                        BalanceSheet_Account bs = (BalanceSheet_Account)mBS.get(position);
+                        if (bs.getType() != Constants_Network.BS_TYPE_OPERATION) iBalanceSheetFragment.buildBalanceSheetFragment(BalanceSheet.getNextLevel(bs.getType()), bs.getDate(), bs.getId());
+                        Log.i("TYYPE: ", bs.getType());
                     }
                 });
                 return holder_account;
@@ -76,7 +89,7 @@ public class ListAdapter_BalanceSheets extends RecyclerView.Adapter<RecyclerView
     public int getItemViewType(int position) {
         BalanceSheet bs = mBS.get(position);
         if (bs instanceof BalanceSheet_Account) {
-            return TYPE_BALANCESHEET_ACCOUNT;
+            return TYPE_BALANCESHEET_LINKED;
         } else {
             return TYPE_BALANCESHEET;
         }

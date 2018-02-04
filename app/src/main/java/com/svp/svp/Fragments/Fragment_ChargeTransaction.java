@@ -185,7 +185,7 @@ public class Fragment_ChargeTransaction extends Fragment {
     private void chargeTransaction() {
         RequestQueue queue;
         queue = Volley.newRequestQueue(getActivity());
-        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/operations.php/addTransaction";
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/addTransaction";
         final JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("code", mTransaction.getCode());
