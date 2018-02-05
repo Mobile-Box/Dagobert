@@ -61,11 +61,13 @@ public class Activity_Update extends AppCompatActivity {
     // Counter
     private int cFiles = 0;
     private int cTotal = 0;
-    private int cALL;
+    private int cALL = 0;
+    private int cALL2 = 0;
     private int cAlreadyCharged = 0;
     private int cError = 0;
     private int cCharged = 0;
     private int cNoOrMultipleModel = 0;
+    int counter = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,16 +129,11 @@ public class Activity_Update extends AppCompatActivity {
     }
 
     private void operateTransactions(ArrayList<Transaction> transactions, final String transactionUrl) {
-        int counter = 0;
-        Log.i("Before", Integer.toString(cALL));
-        Log.i("Transaction", Integer.toString(transactions.size()));
-        Log.i("together", Integer.toString((cALL+transactions.size())));
-        Integer newest = new Integer(cALL+transactions.size());
-        cALL = newest;
-        Log.i("After", Integer.toString(newest));
+
 
         for (final Transaction transaction : transactions) {
             counter++;
+            Log.i("CounterLog: ", Integer.toString(counter));
 
             //RequestQueue queue = null;
             //queue = Volley.newRequestQueue(this);
@@ -157,30 +154,39 @@ public class Activity_Update extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.i("ResponseFromServer", response);
+                        cALL = cALL+1;
+                        Log.i("Gegencheck:", Integer.toString(cALL));
+
                         try {
                             JSONObject jsonObject = new JSONObject(response);
+
                             if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.NO_MODEL)) {
                                 // Save transaction in separate ArrayList
-                                tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel++));
+                                cNoOrMultipleModel = cNoOrMultipleModel+1;
+                                tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel));
                                 mManuals.add(transaction);
                                 mAdapter.notifyDataSetChanged();
 
-                            }
-                            if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
-                                // Fusion with separate ArrayList
-                                tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel++));
-                                mManuals.add(transaction);
-                                mAdapter.notifyDataSetChanged();
-                            }
-                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
-
-                                tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged++));
-                                //Log.i("Fuck2", Integer.toString(cAlreadyCharged++));
-                                //tvAlreadyCharged.setText("Fuck");
-                            }
-                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
-                                //Log.i("Fuck", Integer.toString(cCharged++));
-                                tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
+                            } else {
+                                if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
+                                    // Fusion with separate ArrayList
+                                    cNoOrMultipleModel = cNoOrMultipleModel+1;
+                                    tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel));
+                                    mManuals.add(transaction);
+                                    mAdapter.notifyDataSetChanged();
+                                } else {
+                                    if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
+                                        cAlreadyCharged = cAlreadyCharged+1;
+                                        tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged));
+                                    } else {
+                                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
+                                            cCharged = cCharged+1;
+                                            tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged));
+                                        } else {
+                                            Log.i("Treffer", response);
+                                        }
+                                    }
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -257,7 +263,7 @@ public class Activity_Update extends AppCompatActivity {
                 inputStream = new URL(urls[0]).openStream();
                 cFiles++;
             } catch (Exception e) {
-                Log.i("ErrorCode5: ", "error");
+                //Log.i("ErrorCode5: ", "error");
                 e.printStackTrace();
                 //cError++;
             }
@@ -272,7 +278,6 @@ public class Activity_Update extends AppCompatActivity {
                     while ((csvLine = reader.readLine()) != null) {
                         rowNumber++;
                         cTotal++;
-                        Log.i("Tottal:", Integer.toString(cTotal));
                         String[] row = csvLine.split(";");
                         ArrayList<String> arrayLine = new ArrayList<>();
                         for (String eachWord : row) //Iterate each String from the array
@@ -363,8 +368,10 @@ public class Activity_Update extends AppCompatActivity {
 
         protected void onPostExecute(ArrayList<Transaction> t) {
             if (t.size() > 0) {
+                int all = cALL2+t.size();
+                Log.i("Gegencheck2: ", Integer.toString(all));
                 tvFiles.setText(getString(R.string.number_files)+Integer.toString(cFiles));
-                tvTotal.setText(Integer.toString(cTotal));
+                tvTotal.setText((getString(R.string.transactions_total)+Integer.toString(cTotal)));
                 tvError.setText(getString(R.string.number_error)+Integer.toString(cError));
                 operateTransactions(t, mUrl);
             }
@@ -391,8 +398,8 @@ public class Activity_Update extends AppCompatActivity {
     }
 
     public void manuallyCharged(Transaction transaction) {
-        tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
-        tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel--));
+        //tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
+        //tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel--));
         mManuals.remove(transaction);
         mAdapter.notifyDataSetChanged();
     }
