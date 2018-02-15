@@ -14,19 +14,6 @@
 
             <TextView
                 style="@style/textview_standard_charge_header"
-                android:text="@string/code" />
-
-            <TextView
-                android:id="@+id/tvCode"
-                style="@style/textview_standard_charge_value"
-                android:text="pq93urijfj" />
-
-        </RelativeLayout>
-
-        <RelativeLayout style="@style/relative_layout_charge">
-
-            <TextView
-                style="@style/textview_standard_charge_header"
                 android:text="@string/account" />
 
             <TextView
@@ -88,18 +75,43 @@
 
         </RelativeLayout>
 
-        <RelativeLayout style="@style/relative_layout_charge">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView
-                style="@style/textview_standard_charge_header"
-                android:text="@string/amount" />
+            <RelativeLayout style="@style/relative_layout_charge"
+                android:layout_width="0dp"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/tvAmount"
-                style="@style/textview_standard_charge_value"
-                android:text="457,16 €" />
+                <TextView
+                    style="@style/textview_standard_charge_header"
+                    android:text="@string/amount" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvAmount"
+                    style="@style/textview_standard_charge_value"
+                    android:text="457,16 €" />
+
+            </RelativeLayout>
+
+            <RelativeLayout style="@style/relative_layout_charge"
+                android:layout_width="0dp"
+                android:layout_weight="1">>
+
+                <TextView
+                    style="@style/textview_standard_charge_header"
+                    android:text="@string/value_added_tax" />
+
+                <EditText
+                    android:id="@+id/etValueAddedTax"
+                    style="@style/edittext_standard_charge_value"
+                    android:inputType="number"
+                    android:text="19" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
 
         <RelativeLayout style="@style/relative_layout_charge">
 
@@ -128,19 +140,7 @@
 
         </RelativeLayout>
 
-        <RelativeLayout style="@style/relative_layout_charge">
 
-            <TextView
-                style="@style/textview_standard_charge_header"
-                android:text="@string/value_added_tax" />
-
-            <EditText
-                android:id="@+id/etValueAddedTax"
-                style="@style/edittext_standard_charge_value"
-                android:inputType="number"
-                android:text="19" />
-
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -114,4 +114,59 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <!-- Fragment Charge Transaction -->
+    <style name="charge_text_view_subtext">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textSize">@dimen/charge_text_size_subtext</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="charge_divider">
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/colorBackgroundText</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="charge_text_view">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:padding">@dimen/charge_item_space_vertical</item>
+        <item name="android:textSize">@dimen/charge_text_size_standard</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="charge_edit_text" parent="charge_text_view">
+        <item name="android:background">#00000000</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textColorHint">@color/colorBackgroundText</item>
+        <item name="android:textSize">@dimen/charge_text_size_standard</item>
+    </style>
+
+    <style name="charge_text_view_header">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/charge_text_size_header</item>
+        <item name="android:layout_marginTop">@dimen/charge_item_space_vertical</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="charge_button_one">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textSize">@dimen/charge_text_size_standard</item>
+        <item name="android:background">@drawable/button_charge_one</item>
+    </style>
+
+
+
 </resources>

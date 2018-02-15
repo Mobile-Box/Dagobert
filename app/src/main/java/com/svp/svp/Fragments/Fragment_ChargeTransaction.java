@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,6 @@ public class Fragment_ChargeTransaction extends Fragment {
 
     // Layout
     View mLayout;
-    TextView tvCode;
     TextView tvAccount;
     EditText etName;
     EditText etType;
@@ -49,10 +49,12 @@ public class Fragment_ChargeTransaction extends Fragment {
     EditText etDetailTwo;
     TextView tvAmount;
     TextView tvDate;
-    EditText etSubaccountId;
+    TextView tvSubaccount;
     EditText etValueAddedTax;
     Button bCharge;
     Button bChargeWithModel;
+    LinearLayout llDetailOne;
+    LinearLayout llDetailTwo;
 
     // Variables
     Transaction mTransaction;
@@ -62,13 +64,12 @@ public class Fragment_ChargeTransaction extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         // Layout
-        mLayout = inflater.inflate(R.layout.fragment_charge_transaction, container, false);
+        mLayout = inflater.inflate(R.layout.fragment_charge_transaction_new, container, false);
         setLayout();
 
         // Data
         Bundle bundle = getArguments();
         mTransaction = (Transaction)bundle.getSerializable(Constants_Intern.TRANSACTION);
-        tvCode.setText(mTransaction.getCode());
         tvAccount.setText(Integer.toString(mTransaction.getBankAccountId()));
         tvAmount.setText(Double.toString(mTransaction.getAmount()));
         tvDate.setText(mTransaction.getDate());
@@ -76,7 +77,7 @@ public class Fragment_ChargeTransaction extends Fragment {
         etType.setText(mTransaction.getType());
         etDetailOne.setText(mTransaction.getDetailOne());
         etDetailTwo.setText(mTransaction.getDetailTwo());
-        etSubaccountId.setText(Integer.toString(mTransaction.getSvpSubAccountId()));
+        tvSubaccount.setText(Integer.toString(mTransaction.getSvpSubAccountId()));
 
         // Click Listener
         bCharge.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +91,7 @@ public class Fragment_ChargeTransaction extends Fragment {
             @Override
             public void onClick(View view) {
                 addModel();
-                chargeTransaction();
+                //chargeTransaction();
             }
         });
 
@@ -100,7 +101,6 @@ public class Fragment_ChargeTransaction extends Fragment {
     }
 
     private void setLayout() {
-        tvCode = mLayout.findViewById(R.id.tvCode);
         tvAccount = mLayout.findViewById(R.id.tvAccount);
         tvAmount = mLayout.findViewById(R.id.tvAmount);
         tvDate = mLayout.findViewById(R.id.tvDate);
@@ -108,16 +108,18 @@ public class Fragment_ChargeTransaction extends Fragment {
         etType = mLayout.findViewById(R.id.etType);
         etDetailOne = mLayout.findViewById(R.id.etDetailOne);
         etDetailTwo = mLayout.findViewById(R.id.etDetailTwo);
-        etSubaccountId = mLayout.findViewById(R.id.etSubaccountId);
+        tvSubaccount = mLayout.findViewById(R.id.tvSubaccount);
         etValueAddedTax = mLayout.findViewById(R.id.etValueAddedTax);
         bCharge = mLayout.findViewById(R.id.bCharge);
         bChargeWithModel = mLayout.findViewById(R.id.bChargeWithModel);
+        llDetailOne = mLayout.findViewById(R.id.llDetailOne);
+        llDetailTwo = mLayout.findViewById(R.id.llDetailTwo);
     }
 
     private void addModel() {
         RequestQueue queue;
         queue = Volley.newRequestQueue(getActivity());
-        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/models.php/addModel";
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/addModel";
         final JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("id_bank_account", mTransaction.getBankAccountId());
@@ -125,7 +127,7 @@ public class Fragment_ChargeTransaction extends Fragment {
             jsonBody.put("type", etType.getText().toString());
             jsonBody.put("detail_one", etDetailOne.getText().toString());
             jsonBody.put("detail_two", etDetailTwo.getText().toString());
-            jsonBody.put("id_svp_subaccount", etSubaccountId.getText().toString());
+            jsonBody.put("id_svp_subaccount", tvSubaccount.getText().toString());
             jsonBody.put("ust_value", etValueAddedTax.getText().toString());
             final String requestBody = jsonBody.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -193,6 +195,7 @@ public class Fragment_ChargeTransaction extends Fragment {
             jsonBody.put("amount", mTransaction.getAmount());
             jsonBody.put("date", mTransaction.getDate());
             jsonBody.put("ust_value", etValueAddedTax.getText().toString());
+            jsonBody.put("id_svp_subaccount", tvSubaccount.getText());
             final String requestBody = jsonBody.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override

@@ -4,6 +4,8 @@
     <!-- Process Transaction -->
     <string name="charged_transactions">Charged: </string>
     <string name="transaction_no_or_multiple_model">No or multiple Model: </string>
+    <string name="transaction_no_model">No model</string>
+    <string name="transaction_multiple_model">Multiple model</string>
     <string name="transactions_total">Total: </string>
     <string name="transactions_already_charged">Already charged: </string>
     <string name="number_files">Files: </string>

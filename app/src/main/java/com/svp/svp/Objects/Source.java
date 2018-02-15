@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class Source {
 
     private String fileName;
+    private String fileType;
+    private String fileSplit;
     private int codePosition;
     private int namePosition;
     private int typePosition;
@@ -18,8 +20,10 @@ public class Source {
     private int datePosition;
     private int bankAccountId;
 
-    public Source(String fileName, int codePosition, int namePosition, int typePosition, int detailOnePosition, int detailTwoPosition, int amountPosition, int datePosition, int bankAccountId) {
+    public Source(String fileName, String fileType, String fileSplit, int codePosition, int namePosition, int typePosition, int detailOnePosition, int detailTwoPosition, int amountPosition, int datePosition, int bankAccountId) {
         this.fileName = fileName;
+        this.fileType = fileType;
+        this.fileSplit = fileSplit;
         this.codePosition = codePosition;
         this.namePosition = namePosition;
         this.typePosition = typePosition;
@@ -32,6 +36,14 @@ public class Source {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public String getFileSplit() {
+        return fileSplit;
     }
 
     public int getCodePosition() {

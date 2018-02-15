@@ -223,6 +223,7 @@ public class ProcessTransactions {
 
     private ArrayList<Source> createSources() {
         ArrayList<Source> sources = new ArrayList<>();
+        /*
         sources.add(new Source("Amazon_DE", 1, 8, 3, 4, 0, 6, 1, 4));
         sources.add(new Source("Amazon_UK", 1, 8, 3, 4, 0, 6, 1,5));
         sources.add(new Source("Amazon_ES", 1, 8, 3, 4, 0, 6, 1,6));
@@ -230,6 +231,7 @@ public class ProcessTransactions {
         sources.add(new Source("Commerzbank_9200", 3, 3, 2, 0, 0, 4, 1,2));
         sources.add(new Source("Commerzbank_4500", 3, 3, 2, 0, 0, 4, 1,3));
         sources.add(new Source("Paypal", 12, 3, 4, 15, 5, 8, 0, 7));
+        */
         //sources.add(new Source("GLS", 2, 9, 4, 5, 0, 9, 1, 8));
         return sources;
     }

@@ -4,4 +4,11 @@
     <dimen name="text_size_subitem">10sp</dimen>
     <dimen name="text_size_header">14sp</dimen>
 
+    <!-- Fragment Charge Transaction-->
+    <dimen name="charge_item_marging_top_bottom">16dp</dimen>
+    <dimen name="charge_text_size_standard">12sp</dimen>
+    <dimen name="charge_text_size_header">8sp</dimen>
+    <dimen name="charge_text_size_subtext">11sp</dimen>
+    <dimen name="charge_item_space_vertical">8dp</dimen>
+
 </resources>

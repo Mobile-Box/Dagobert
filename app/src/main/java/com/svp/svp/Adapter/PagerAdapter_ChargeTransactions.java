@@ -37,4 +37,5 @@ public class PagerAdapter_ChargeTransactions extends FragmentStatePagerAdapter {
     public int getCount() {
         return mTransactions.size();
     }
+
 }
