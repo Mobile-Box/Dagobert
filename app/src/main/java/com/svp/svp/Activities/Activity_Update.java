@@ -22,6 +22,7 @@ import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.Source;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
+import com.svp.svp.Utilitys.Utility_Dates;
 import com.svp.svp.Volley.AppController;
 
 import org.json.JSONException;
@@ -365,7 +366,7 @@ public class Activity_Update extends AppCompatActivity {
                                         ((arrayLine.get(mSource.getTypePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getTypePosition()),
                                         (mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition()),
                                         (mSource.getDetailTwoPosition() == 0 || (arrayLine.get(mSource.getDetailTwoPosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailTwoPosition()),
-                                        amount, formatDateForSQL(arrayLine.get(mSource.getDatePosition())), mSource.getBankAccountId()));
+                                        amount, Utility_Dates.encodeDateForSQL(arrayLine.get(mSource.getDatePosition())), mSource.getBankAccountId()));
                             } catch (IndexOutOfBoundsException e) {
                                 e.printStackTrace();
                                 Log.i("ErrorCode2:", arrayLine.toString());
@@ -406,11 +407,7 @@ public class Activity_Update extends AppCompatActivity {
         }
     }
 
-    private String formatDateForSQL(String date) {
-        date = date.replace(".", "");
-        date = date.substring(4, 8) + date.substring(2, 4) + date.substring(0, 2);
-        return date;
-    }
+
 
     private ArrayList<Source> createSources() {
         ArrayList<Source> sources = new ArrayList<>();

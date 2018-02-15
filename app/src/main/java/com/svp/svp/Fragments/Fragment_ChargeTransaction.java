@@ -28,6 +28,7 @@ import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Constants.Constants_Network;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
+import com.svp.svp.Utilitys.Utility_Dates;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,8 +72,8 @@ public class Fragment_ChargeTransaction extends Fragment {
         Bundle bundle = getArguments();
         mTransaction = (Transaction)bundle.getSerializable(Constants_Intern.TRANSACTION);
         tvAccount.setText(Integer.toString(mTransaction.getBankAccountId()));
-        tvAmount.setText(Double.toString(mTransaction.getAmount()));
-        tvDate.setText(mTransaction.getDate());
+        tvAmount.setText(Double.toString(mTransaction.getAmount())+" €");
+        tvDate.setText(Utility_Dates.decodeDateFromSQL(mTransaction.getDate()));
         etName.setText(mTransaction.getName());
         etType.setText(mTransaction.getType());
         etDetailOne.setText(mTransaction.getDetailOne());
