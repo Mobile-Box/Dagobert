@@ -61,6 +61,10 @@ public class Activity_Update extends AppCompatActivity {
     String mLastUrl;
     PagerAdapter_ChargeTransactions mAdapter;
 
+    // Constants
+    final static int TAB_NO_MODEL = 0;
+    final static int TAB_MULTIPLE_MODEL = 1;
+
     // Counter
     private int cFiles = 0;
     private int cTotal = 0;
@@ -91,20 +95,24 @@ public class Activity_Update extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
-                    case 0:
+                    case TAB_NO_MODEL:
                         mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel);
                         mViewPager.setAdapter(mAdapter);
                         break;
-                    case 1:
+                    case TAB_MULTIPLE_MODEL:
                         mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
                         mViewPager.setAdapter(mAdapter);
                         break;
                 }
             }
+
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
 
         // Update
@@ -144,7 +152,7 @@ public class Activity_Update extends AppCompatActivity {
                 for (Source source : mSources) {
                     String year = Integer.toString(y);
                     String year_month = year + "_" + Integer.toString(m);
-                    String[] urlToCheck = {"http://svp-server.com/svp-gmbh/dagobert/transactions/" + year + "/" + year_month + "/" + source.getFileName() + "_" + year_month + "."+source.getFileType()};
+                    String[] urlToCheck = {"http://svp-server.com/svp-gmbh/dagobert/transactions/" + year + "/" + year_month + "/" + source.getFileName() + "_" + year_month + "." + source.getFileType()};
                     // Start process
                     new receiveTransactions(source, urlToCheck[0]).execute(urlToCheck);
                     if (y == currentYear - 1 && m == 1) {
@@ -181,39 +189,33 @@ public class Activity_Update extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.i("ResponseFromServer", response);
-                        cALL = cALL+1;
-                        Log.i("Gegencheck:", Integer.toString(cALL));
-
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-
+                            // No Model
                             if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.NO_MODEL)) {
                                 // Save transaction in separate ArrayList
-                                cNoModel = cNoModel+1;
-                                mTabLayout.getTabAt(0).setText(Integer.toString(cNoModel)+" - "+getString(R.string.transaction_no_model));
+                                cNoModel = cNoModel + 1;
+                                mTabLayout.getTabAt(0).setText(Integer.toString(cNoModel) + " - " + getString(R.string.transaction_no_model));
                                 tNoModel.add(transaction);
                                 mAdapter.notifyDataSetChanged();
-
-                            } else {
-                                if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
-                                    // Fusion with separate ArrayList
-                                    cMultipleModel = cMultipleModel+1;
-                                    mTabLayout.getTabAt(0).setText(Integer.toString(cMultipleModel)+" - "+getString(R.string.transaction_multiple_model));
-                                    tMultipleModel.add(transaction);
-                                    mAdapter.notifyDataSetChanged();
-                                } else {
-                                    if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
-                                        cAlreadyCharged = cAlreadyCharged+1;
-                                        tvAlreadyCharged.setText(getString(R.string.transactions_already_charged)+" "+Integer.toString(cAlreadyCharged));
-                                    } else {
-                                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
-                                            cCharged = cCharged+1;
-                                            tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged));
-                                        } else {
-                                            Log.i("Treffer", response);
-                                        }
-                                    }
-                                }
+                            }
+                            // Multiple Model
+                            if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
+                                // Fusion with separate ArrayList
+                                cMultipleModel = cMultipleModel + 1;
+                                mTabLayout.getTabAt(0).setText(Integer.toString(cMultipleModel) + " - " + getString(R.string.transaction_multiple_model));
+                                tMultipleModel.add(transaction);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            // Already charged
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.OPERATION_EXISTS_ALREADY)) {
+                                cAlreadyCharged = cAlreadyCharged + 1;
+                                tvAlreadyCharged.setText(getString(R.string.transactions_already_charged) + " " + Integer.toString(cAlreadyCharged));
+                            }
+                            // Transaction charged
+                            if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
+                                cCharged = cCharged + 1;
+                                tvCharged.setText(getString(R.string.charged_transactions) + " " + Integer.toString(cCharged));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -325,7 +327,8 @@ public class Activity_Update extends AppCompatActivity {
 
                             Log.i("Show", arrayLine.toString());
 
-                            if (mSource.getBankAccountId() == 5 || mSource.getBankAccountId() == 4 || mSource.getBankAccountId() == 6) a = a.substring(1); // Pound and Euro
+                            if (mSource.getBankAccountId() == 5 || mSource.getBankAccountId() == 4 || mSource.getBankAccountId() == 6)
+                                a = a.substring(1); // Pound and Euro
                             double amount;
                             amount = Double.parseDouble(a);
 
@@ -340,7 +343,7 @@ public class Activity_Update extends AppCompatActivity {
                             }
 
                             Log.i("Code", code);
-                            String name="";
+                            String name = "";
                             if (mSource.getFileName().matches("Amazon.*") && arrayLine.size() < 9) {
                                 Log.i("Triggered", "Error");
                                 Log.i("TriggeredWhat", arrayLine.toString());
@@ -348,7 +351,7 @@ public class Activity_Update extends AppCompatActivity {
                             } else {
                                 if (mSource.getFileName().matches("GLS.*")) {
 
-                                    for (int i = 5; i<19; i++) {
+                                    for (int i = 5; i < 19; i++) {
                                         name = name + arrayLine.get(i);
                                     }
                                     Log.i("OHHHH", "name");
@@ -370,7 +373,7 @@ public class Activity_Update extends AppCompatActivity {
                             } catch (IndexOutOfBoundsException e) {
                                 e.printStackTrace();
                                 Log.i("ErrorCode2:", arrayLine.toString());
-                                Log.i("Goo", "Code: "+ code+ " DetailOne: "+ ((mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition())+ " Name: "+ name));
+                                Log.i("Goo", "Code: " + code + " DetailOne: " + ((mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition()) + " Name: " + name));
                                 Log.i("DATEPROB: ", arrayLine.get(mSource.getDatePosition()));
                                 cError++;
                                 if (arrayLine.get(1).isEmpty()) {
@@ -397,16 +400,15 @@ public class Activity_Update extends AppCompatActivity {
 
         protected void onPostExecute(ArrayList<Transaction> t) {
             if (t.size() > 0) {
-                int all = cALL2+t.size();
+                int all = cALL2 + t.size();
                 Log.i("Gegencheck2: ", Integer.toString(all));
-                tvFiles.setText(getString(R.string.number_files)+Integer.toString(cFiles));
-                tvTotal.setText((getString(R.string.transactions_total)+Integer.toString(cTotal)));
-                tvError.setText(getString(R.string.number_error)+Integer.toString(cError));
+                tvFiles.setText(getString(R.string.number_files) + Integer.toString(cFiles));
+                tvTotal.setText((getString(R.string.transactions_total) + Integer.toString(cTotal)));
+                tvError.setText(getString(R.string.number_error) + Integer.toString(cError));
                 operateTransactions(t, mUrl);
             }
         }
     }
-
 
 
     private ArrayList<Source> createSources() {
@@ -414,7 +416,8 @@ public class Activity_Update extends AppCompatActivity {
         /*sources.add(new Source("Amazon_DE", "txt", "\\t", 1, 8, 3, 4, 0, 6, 0, 4));
         sources.add(new Source("Amazon_UK", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 5));
         sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
-        */sources.add(new Source("Commerzbank_4600", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 1));
+        */
+        sources.add(new Source("Commerzbank_4600", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 1));
         sources.add(new Source("Commerzbank_9200", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 2));
         sources.add(new Source("Commerzbank_4500", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 3));
         //sources.add(new Source("Paypal", "txt", "\\t",12, 3, 4, 15, 5, 7, 0, 7));
@@ -423,9 +426,22 @@ public class Activity_Update extends AppCompatActivity {
     }
 
     public void manuallyCharged(Transaction transaction) {
-        //tvCharged.setText(getString(R.string.charged_transactions)+" "+Integer.toString(cCharged++));
-        //tvNoOrMultiModel.setText(getString(R.string.transaction_no_or_multiple_model)+" "+Integer.toString(cNoOrMultipleModel--));
-        //mManuals.remove(transaction);
-        mAdapter.notifyDataSetChanged();
+        tvCharged.setText(getString(R.string.charged_transactions) + " " + Integer.toString(cCharged++));
+        switch (mTabLayout.getSelectedTabPosition()) {
+            case TAB_NO_MODEL:
+                tNoModel.remove(transaction);
+                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel);
+                mViewPager.setAdapter(mAdapter);
+                mTabLayout.getTabAt(TAB_NO_MODEL).setText(Integer.toString(cNoModel--) + " - " + getString(R.string.transaction_no_model));
+                break;
+            case TAB_MULTIPLE_MODEL:
+                tMultipleModel.remove(transaction);
+                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
+                mViewPager.setAdapter(mAdapter);
+                mTabLayout.getTabAt(TAB_MULTIPLE_MODEL).setText(Integer.toString(cMultipleModel--) + " - " + getString(R.string.transaction_multiple_model));
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -66,10 +66,10 @@ public class BalanceSheet {
     }
 
     public static String getBackLevel(String type) {
-        if (type.equals(Constants_Network.BS_TYPE_SUBACCOUNT)) {
+        if (type.equals(Constants_Intern.BALANCESHEET_TYPE_SUBACCOUNTS)) {
             return Constants_Intern.BALANCESHEET_TYPE_ACCOUNTS;
         }
-        if (type.equals(Constants_Network.BS_TYPE_OPERATION)) {
+        if (type.equals(Constants_Intern.BALANCESHEET_TYPE_OPERATIONS)) {
             return Constants_Intern.BALANCESHEET_TYPE_SUBACCOUNTS;
         }
         return null;

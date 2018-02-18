@@ -1,5 +1,7 @@
 package com.svp.svp.Fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,14 +28,17 @@ import com.android.volley.toolbox.Volley;
 import com.svp.svp.Activities.Activity_Update;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Constants.Constants_Network;
+import com.svp.svp.Objects.Source;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
 import com.svp.svp.Utilitys.Utility_Dates;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 
 /**
  * Created by Eric Schumacher on 13.12.2017.
@@ -51,7 +56,7 @@ public class Fragment_ChargeTransaction extends Fragment {
     TextView tvAmount;
     TextView tvDate;
     TextView tvSubaccount;
-    EditText etValueAddedTax;
+    TextView tvValueAddedTax;
     Button bCharge;
     Button bChargeWithModel;
     LinearLayout llDetailOne;
@@ -59,6 +64,8 @@ public class Fragment_ChargeTransaction extends Fragment {
 
     // Variables
     Transaction mTransaction;
+    int mSubaccountId = 0;
+    int mValueAddedTax;
 
     @Nullable
     @Override
@@ -70,15 +77,19 @@ public class Fragment_ChargeTransaction extends Fragment {
 
         // Data
         Bundle bundle = getArguments();
-        mTransaction = (Transaction)bundle.getSerializable(Constants_Intern.TRANSACTION);
-        tvAccount.setText(Integer.toString(mTransaction.getBankAccountId()));
-        tvAmount.setText(Double.toString(mTransaction.getAmount())+" €");
+        mTransaction = (Transaction) bundle.getSerializable(Constants_Intern.TRANSACTION);
+        tvAccount.setText(Source.getSpeceficBankAccountName(mTransaction.getBankAccountId()));
+        DecimalFormat df2 = new DecimalFormat(".##");
+        tvAmount.setText(String.format("%.2f", mTransaction.getAmount()) + " €");
         tvDate.setText(Utility_Dates.decodeDateFromSQL(mTransaction.getDate()));
         etName.setText(mTransaction.getName());
         etType.setText(mTransaction.getType());
         etDetailOne.setText(mTransaction.getDetailOne());
         etDetailTwo.setText(mTransaction.getDetailTwo());
         tvSubaccount.setText(Integer.toString(mTransaction.getSvpSubAccountId()));
+
+        mValueAddedTax = 19;
+        tvValueAddedTax.setText(Integer.toString(mValueAddedTax) + " %");
 
         // Click Listener
         bCharge.setOnClickListener(new View.OnClickListener() {
@@ -95,9 +106,6 @@ public class Fragment_ChargeTransaction extends Fragment {
                 //chargeTransaction();
             }
         });
-
-
-
         return mLayout;
     }
 
@@ -110,11 +118,53 @@ public class Fragment_ChargeTransaction extends Fragment {
         etDetailOne = mLayout.findViewById(R.id.etDetailOne);
         etDetailTwo = mLayout.findViewById(R.id.etDetailTwo);
         tvSubaccount = mLayout.findViewById(R.id.tvSubaccount);
-        etValueAddedTax = mLayout.findViewById(R.id.etValueAddedTax);
+        tvValueAddedTax = mLayout.findViewById(R.id.tvValueAddedTax);
         bCharge = mLayout.findViewById(R.id.bCharge);
         bChargeWithModel = mLayout.findViewById(R.id.bChargeWithModel);
         llDetailOne = mLayout.findViewById(R.id.llDetailOne);
         llDetailTwo = mLayout.findViewById(R.id.llDetailTwo);
+
+        // ClickListener
+        tvSubaccount.setOnClickListener(accountClickReaction());
+        tvSubaccount.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mSubaccountId = 2;
+                tvSubaccount.setText("Verkauf / Ebay");
+                return true;
+            }
+        });
+        tvValueAddedTax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CharSequence[] items = {"19 %", "7 %", "0 %"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.value_added_tax))
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                tvValueAddedTax.setText(items[i]);
+                                switch (i) {
+                                    case 0:
+                                        mValueAddedTax = 19;
+                                        break;
+                                    case 1:
+                                        mValueAddedTax = 7;
+                                        break;
+                                    case 2:
+                                        mValueAddedTax = 0;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setCancelable(true);
+                builder.show();
+            }
+        });
+
     }
 
     private void addModel() {
@@ -128,8 +178,8 @@ public class Fragment_ChargeTransaction extends Fragment {
             jsonBody.put("type", etType.getText().toString());
             jsonBody.put("detail_one", etDetailOne.getText().toString());
             jsonBody.put("detail_two", etDetailTwo.getText().toString());
-            jsonBody.put("id_svp_subaccount", tvSubaccount.getText().toString());
-            jsonBody.put("ust_value", etValueAddedTax.getText().toString());
+            jsonBody.put("id_svp_subaccount", mSubaccountId);
+            jsonBody.put("ust_value", tvValueAddedTax.getText().toString());
             final String requestBody = jsonBody.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -195,8 +245,8 @@ public class Fragment_ChargeTransaction extends Fragment {
             jsonBody.put("name", etName.getText().toString());
             jsonBody.put("amount", mTransaction.getAmount());
             jsonBody.put("date", mTransaction.getDate());
-            jsonBody.put("ust_value", etValueAddedTax.getText().toString());
-            jsonBody.put("id_svp_subaccount", tvSubaccount.getText());
+            jsonBody.put("ust_value", tvValueAddedTax.getText().toString());
+            jsonBody.put("id_svp_subaccount", mSubaccountId);
             final String requestBody = jsonBody.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -204,8 +254,9 @@ public class Fragment_ChargeTransaction extends Fragment {
                     Log.i("Response - Charge", response);
                     try {
                         JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)){
-                            ((Activity_Update)getActivity()).manuallyCharged(mTransaction);
+                        if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
+                            Toast.makeText(getActivity(), getString(R.string.transaction_operated), Toast.LENGTH_LONG).show();
+                            ((Activity_Update) getActivity()).manuallyCharged(mTransaction);
 
                         }
 
@@ -247,6 +298,135 @@ public class Fragment_ChargeTransaction extends Fragment {
             queue.getCache().clear();
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private View.OnClickListener accountClickReaction() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RequestQueue queue;
+                queue = Volley.newRequestQueue(getActivity());
+                final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/accounts";
+                final JSONObject jsonBody = new JSONObject();
+                try {
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("Response - Model-Add", response);
+                            try {
+                                final JSONArray jsonArray = new JSONArray(response);
+                                CharSequence[] accountNames = new CharSequence[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    accountNames[i] = jsonObject.getString("name");
+                                }
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                                        .setTitle(getString(R.string.accounts))
+                                        .setItems(accountNames, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                // pass accountId to subaccount selector list
+                                                try {
+                                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                                    showSubaccountsAndReact(jsonObject.getString("name"), jsonObject.getInt("id"));
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                } finally {
+                                                    dialogInterface.dismiss();
+                                                }
+                                            }
+                                        })
+                                        .setCancelable(true);
+                                builder.show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("VOLLEY", error.toString());
+                        }
+                    }) {
+                        @Override
+                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                            String responseString = "";
+                            if (response != null && response.statusCode == 200) {
+                                responseString = new String(response.data);
+                            }
+                            return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                        }
+                    };
+                    queue.add(stringRequest);
+                    queue.getCache().clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        return clickListener;
+    }
+
+    private void showSubaccountsAndReact(final String accountName, int accountId) {
+        RequestQueue queue;
+        queue = Volley.newRequestQueue(getActivity());
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/subaccounts/" + Integer.toString(accountId);
+        final JSONObject jsonBody = new JSONObject();
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        final JSONArray jsonArray = new JSONArray(response);
+                        CharSequence[] subaccountNames = new CharSequence[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            subaccountNames[i] = jsonObject.getString("name");
+                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                                .setTitle(accountName)
+                                .setItems(subaccountNames, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        // save subaccountId to TextView
+                                        try {
+                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                            tvSubaccount.setText(accountName + " / " + jsonObject.getString("name"));
+                                            mSubaccountId = jsonObject.getInt("id");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            dialogInterface.dismiss();
+                                        }
+                                    }
+                                })
+                                .setCancelable(true);
+                        builder.show();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+                }
+            }) {
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null && response.statusCode == 200) {
+                        responseString = new String(response.data);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            queue.add(stringRequest);
+            queue.getCache().clear();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

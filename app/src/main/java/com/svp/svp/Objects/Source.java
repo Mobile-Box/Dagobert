@@ -94,4 +94,27 @@ public class Source {
     public void setDatePosition(int datePosition) {
         this.datePosition = datePosition;
     }
+
+    public static String getSpeceficBankAccountName(int id) {
+        switch (id) {
+            case 1:
+                return "Commerzbank 4600";
+            case 2:
+                return "Commerzbank 9200";
+            case 3:
+                return "Commerzbank 4500";
+            case 4:
+                return "Amazon-DE";
+            case 5:
+                return "Amazon-UK";
+            case 6:
+                return "Amazon-ES";
+            case 7:
+                return "Paypal";
+            case 8:
+                return "GLS Bank";
+            default:
+                return "no bank";
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="16dp">
 
@@ -8,24 +8,24 @@
         android:id="@+id/llSubHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
         <TextView
-        android:id="@+id/tvDate"
-        style="@style/charge_text_view_subtext"
-        android:text="12 Februar 2017"/>
+            android:id="@+id/tvDate"
+            style="@style/charge_text_view_subtext"
+            android:text="12 Februar 2017" />
 
         <TextView
             android:id="@+id/tvAmount"
             style="@style/charge_text_view_subtext"
             android:text="1.345 €"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvAccount"
             style="@style/charge_text_view_subtext"
-            android:text="Commerzbank - 4600"/>
+            android:text="Commerzbank - 4600" />
     </LinearLayout>
 
     <View
@@ -41,108 +41,116 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/etName"
                 style="@style/charge_edit_text"
-                android:text="Gehalt Onur"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:text="Gehalt Onur" />
 
             <TextView
                 style="@style/charge_text_view_header"
-                android:text="Umsatzsteuer"/>
+                android:text="Umsatzsteuer" />
 
-            <EditText
-                android:id="@+id/etValueAddedTax"
-                style="@style/charge_edit_text"
-                android:text="19 %"/>
+            <TextView
+                android:id="@+id/tvValueAddedTax"
+                style="@style/charge_text_view"
+                android:text="19 %" />
 
             <TextView
                 style="@style/charge_text_view_header"
-                android:text="Unterkonto"/>
+                android:text="Unterkonto" />
 
             <TextView
                 android:id="@+id/tvSubaccount"
                 style="@style/charge_text_view"
-                android:text="Auswählen"/>
+                android:text="Auswählen" />
 
             <Button
                 android:id="@+id/bCharge"
                 style="@style/charge_button_one"
-                android:text="Charge"/>
+                android:text="Charge" />
 
             <View
                 style="@style/charge_divider"
                 android:layout_above="@id/llSubHeader"></View>
 
             <LinearLayout
+                android:id="@+id/llModel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/charge_text_view_header"
-                        android:text="Type"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/etType"
-                        style="@style/charge_edit_text"
-                        android:text="Überweisung"/>
+                        <TextView
+                            style="@style/charge_text_view_header"
+                            android:text="Type" />
+
+                        <EditText
+                            android:id="@+id/etType"
+                            style="@style/charge_edit_text"
+                            android:text="Überweisung" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llDetailOne"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/charge_text_view_header"
+                            android:text="Detail One" />
+
+                        <EditText
+                            android:id="@+id/etDetailOne"
+                            style="@style/charge_edit_text"
+                            android:text="Erstattung" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llDetailTwo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/charge_text_view_header"
+                            android:text="Detail Two" />
+
+                        <EditText
+                            android:id="@+id/etDetailTwo"
+                            style="@style/charge_edit_text"
+                            android:text="EMPTY" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/llDetailOne"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/charge_text_view_header"
-                        android:text="Detail One"/>
-
-                    <EditText
-                        android:id="@+id/etDetailOne"
-                        style="@style/charge_edit_text"
-                        android:text="Erstattung"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llDetailTwo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/charge_text_view_header"
-                        android:text="Detail Two"/>
-
-                    <EditText
-                        android:id="@+id/etDetailTwo"
-                        style="@style/charge_edit_text"
-                        android:text="EMPTY"/>
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/bChargeWithModel"
+                    style="@style/charge_button_one"
+                    android:background="@drawable/button_charge_two"
+                    android:text="Charge and Create model" />
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/bChargeWithModel"
-                style="@style/charge_button_one"
-                android:text="Charge and Create model"
-                android:background="@drawable/button_charge_two"/>
 
         </LinearLayout>
 
