@@ -44,7 +44,7 @@ import java.text.DecimalFormat;
  * Created by Eric Schumacher on 13.12.2017.
  */
 
-public class Fragment_ChargeTransaction extends Fragment {
+public class Fragment_Transaction_Charge extends Fragment {
 
     // Layout
     View mLayout;

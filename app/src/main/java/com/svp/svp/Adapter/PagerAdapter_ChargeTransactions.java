@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.svp.svp.Constants.Constants_Intern;
-import com.svp.svp.Fragments.Fragment_ChargeTransaction;
+import com.svp.svp.Fragments.Fragment_Transaction_Charge;
 import com.svp.svp.Objects.Transaction;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class PagerAdapter_ChargeTransactions extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = new Fragment_ChargeTransaction();
+        Fragment fragment = new Fragment_Transaction_Charge();
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants_Intern.TRANSACTION, mTransactions.get(position));
         fragment.setArguments(bundle);

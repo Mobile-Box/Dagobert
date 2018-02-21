@@ -64,6 +64,7 @@ public class Activity_Update extends AppCompatActivity {
     // Constants
     final static int TAB_NO_MODEL = 0;
     final static int TAB_MULTIPLE_MODEL = 1;
+    final static int TAB_CHARGED_MANUALLY = 2;
 
     // Counter
     private int cFiles = 0;
@@ -91,6 +92,7 @@ public class Activity_Update extends AppCompatActivity {
         // Set up TabLayout
         mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.transaction_no_model)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.transaction_multiple_model)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.transaction_charged_manually)));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -100,6 +102,10 @@ public class Activity_Update extends AppCompatActivity {
                         mViewPager.setAdapter(mAdapter);
                         break;
                     case TAB_MULTIPLE_MODEL:
+                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
+                        mViewPager.setAdapter(mAdapter);
+                        break;
+                    case TAB_CHARGED_MANUALLY:
                         mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
                         mViewPager.setAdapter(mAdapter);
                         break;
