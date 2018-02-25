@@ -81,16 +81,16 @@ public class Fragment_BalanceSheet extends Fragment implements View.OnClickListe
                         JSONArray jsonArray = new JSONArray(response);
                         for (int i=0; i<jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            if (jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_ACCOUNT) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_SUBACCOUNT) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_OPERATION)) {
+                            if (jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_ACCOUNT) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_OPERATION) || jsonObject.getString(Constants_Network.BS_TYPE).equals(Constants_Network.BS_TYPE_SUBACCOUNT)) {
                                 BalanceSheet_Account bs_account = new BalanceSheet_Account(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), jsonObject.getDouble(Constants_Network.BS_AMOUNT), jsonObject.getInt(Constants_Network.BS_ID), (Navigation_Date)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE));
+                                Log.i("JETZT", jsonObject.getString(Constants_Network.BS_NAME)+" "+jsonObject.getString(Constants_Network.BS_TYPE));
                                 mListBalanceSheet.add(bs_account);
                             } else {
-                                BalanceSheet bs = new BalanceSheet(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), (jsonObject.get(Constants_Network.BS_AMOUNT) !=null) ? jsonObject.getDouble(Constants_Network.BS_AMOUNT) : 111111, (Navigation_Date)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE));
-                                mListBalanceSheet.add(bs);
+                                    BalanceSheet bs = new BalanceSheet(jsonObject.getString(Constants_Network.BS_TYPE), jsonObject.getString(Constants_Network.BS_NAME), (jsonObject.get(Constants_Network.BS_AMOUNT) !=null) ? jsonObject.getDouble(Constants_Network.BS_AMOUNT) : 111111, (Navigation_Date)getArguments().getSerializable(Constants_Intern.NAVIGATION_DATE));
+                                    mListBalanceSheet.add(bs);
+                                }
                             }
                             mAdapter.notifyDataSetChanged();
-
-                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

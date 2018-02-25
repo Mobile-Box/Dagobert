@@ -22,4 +22,7 @@ public class Constants_Intern {
     public static final String BALANCESHEET_TYPE_SUBACCOUNTS = "subaccounts";
     public static final String BALANCESHEET_TYPE_OPERATIONS = "operations";
 
+    // General
+    public static final String OPERATION = "OPERATION";
+
 }

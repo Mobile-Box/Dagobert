@@ -16,6 +16,7 @@ public class Utility_Dates {
     }
 
     public static String decodeDateFromSQL(String date) {
+        date = date.replace("-", "");
         Calendar d = Calendar.getInstance();
         d.set(Calendar.YEAR, Integer.parseInt(date.substring(0,4)));
         d.set(Calendar.MONTH, Integer.parseInt(date.substring(4,6)));

@@ -146,6 +146,13 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         openFragment(fragment);
     }
 
+    @Override
+    public void buildTransactionShowFragment(int OperationId) {
+        Intent intent = new Intent(this, Activity_Recharge.class);
+        intent.putExtra(Constants_Intern.ID, OperationId);
+        startActivity(intent);
+    }
+
     private void openFragment(Fragment fragment) {
         android.support.v4.app.FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.frame_layout, fragment);
@@ -171,4 +178,5 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         }
         return dates;
     }
+
 }

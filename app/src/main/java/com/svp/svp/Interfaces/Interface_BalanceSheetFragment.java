@@ -8,5 +8,6 @@ import com.svp.svp.Objects.Navigation.Navigation_Date;
 
 public interface Interface_BalanceSheetFragment {
     public void buildBalanceSheetFragment(String type, Navigation_Date date, int id);
+    public void buildTransactionShowFragment(int OperationId);
 
 }

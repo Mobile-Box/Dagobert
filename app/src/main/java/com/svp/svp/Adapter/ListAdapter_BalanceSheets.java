@@ -61,8 +61,12 @@ public class ListAdapter_BalanceSheets extends RecyclerView.Adapter<RecyclerView
                     @Override
                     public void onCick(int position) {
                         BalanceSheet_Account bs = (BalanceSheet_Account)mBS.get(position);
-                        if (bs.getType() != Constants_Network.BS_TYPE_OPERATION) iBalanceSheetFragment.buildBalanceSheetFragment(BalanceSheet.getNextLevel(bs.getType()), bs.getDate(), bs.getId());
-                        Log.i("TYYPE: ", bs.getType());
+                        if (!bs.getType().equals(Constants_Network.BS_TYPE_OPERATION)) {
+                            iBalanceSheetFragment.buildBalanceSheetFragment(BalanceSheet.getNextLevel(bs.getType()), bs.getDate(), bs.getId());
+                        } else {
+                            Log.i("NoT", "POssible");
+                            iBalanceSheetFragment.buildTransactionShowFragment(bs.getId());
+                        }
                     }
                 });
                 return holder_account;

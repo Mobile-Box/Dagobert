@@ -2,16 +2,26 @@ package com.svp.svp.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.svp.svp.Activities.Activity_Main;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Objects.Navigation.Navigation_Date;
 import com.svp.svp.Objects.Navigation.Navigation_Month;
+import com.svp.svp.Objects.Navigation.Navigation_Year;
 import com.svp.svp.R;
 
 import java.util.ArrayList;
@@ -58,6 +68,7 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
         Holder_Date h = (Holder_Date)holder;
         Navigation_Date date = mDates.get(position);
         h.tvName.setText(date.getName(date.getValue()));
+        showProfit(h.tvAmount, date);
     }
 
     @Override
@@ -102,6 +113,51 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
 
     private interface ClickInterface {
         void onClick(int position);
+    }
+
+    private void showProfit(final TextView tvProfit, Navigation_Date date) {
+        String year;
+        String month;
+        if (date instanceof Navigation_Month) {
+            Navigation_Month date_month = (Navigation_Month)date;
+            year = Integer.toString(date_month.getYear());
+            month = "/"+Integer.toString(date_month.getMonth());
+        } else {
+            Navigation_Year date_year = (Navigation_Year) date;
+            year = Integer.toString(date_year.getYear());
+            month = "";
+        }
+        RequestQueue queue;
+        Log.i("Spinnst", "Du");
+        queue = Volley.newRequestQueue(mContext);
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/profit/"+year+month;
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    tvProfit.setText(response);
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+                }
+            }) {
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null && response.statusCode == 200) {
+                        responseString = new String(response.data);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            queue.add(stringRequest);
+            queue.getCache().clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

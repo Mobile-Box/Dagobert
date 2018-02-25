@@ -17,6 +17,7 @@ public class Constants_Network {
     public static final String MODEL_ADDED = "MODEL_ADDED";
     public static final String MODEL_EXISTS = "MODEL_EXISTS";
     public static final String EMPTY = "EMPTY";
+    public static final String ID_OPERATION = "ID_OPERATION";
 
     // Balance-Sheet
     public static final String BS_TYPE = "BS_TYPE";

@@ -17,7 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.Activity_Update"></activity>
+    <activity android:name=".Activities.Activity_Update"></activity>
+    <activity android:name=".Activities.Activity_Recharge"></activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

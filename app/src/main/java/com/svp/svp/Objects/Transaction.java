@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 
 public class Transaction implements Serializable {
+    private int id;
     private String code;
     private String name;
     private String type;
@@ -16,6 +17,7 @@ public class Transaction implements Serializable {
     private String date;
     private int bankAccountId;
     private int svpSubAccountId;
+    private int ustValue = 19;
 
     public Transaction(String code, String name, String type, String detailOne, String detailTwo, double amount, String date, int bankAccountId) {
         this.code = code;
@@ -27,6 +29,22 @@ public class Transaction implements Serializable {
         this.date = date;
         this.bankAccountId = bankAccountId;
         svpSubAccountId = 0;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getUstValue() {
+        return ustValue;
+    }
+
+    public void setUstValue(int ustValue) {
+        this.ustValue = ustValue;
     }
 
     public String getCode() {

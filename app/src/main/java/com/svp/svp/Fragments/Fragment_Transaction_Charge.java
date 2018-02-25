@@ -44,7 +44,7 @@ import java.text.DecimalFormat;
  * Created by Eric Schumacher on 13.12.2017.
  */
 
-public class Fragment_Transaction_Charge extends Fragment {
+public class Fragment_Transaction_Charge extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     // Layout
     View mLayout;
@@ -64,7 +64,7 @@ public class Fragment_Transaction_Charge extends Fragment {
 
     // Variables
     Transaction mTransaction;
-    int mSubaccountId = 0;
+    int mSubaccountId;
     int mValueAddedTax;
 
     @Nullable
@@ -91,21 +91,6 @@ public class Fragment_Transaction_Charge extends Fragment {
         mValueAddedTax = 19;
         tvValueAddedTax.setText(Integer.toString(mValueAddedTax) + " %");
 
-        // Click Listener
-        bCharge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chargeTransaction();
-            }
-        });
-
-        bChargeWithModel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addModel();
-                //chargeTransaction();
-            }
-        });
         return mLayout;
     }
 
@@ -124,47 +109,14 @@ public class Fragment_Transaction_Charge extends Fragment {
         llDetailOne = mLayout.findViewById(R.id.llDetailOne);
         llDetailTwo = mLayout.findViewById(R.id.llDetailTwo);
 
-        // ClickListener
-        tvSubaccount.setOnClickListener(accountClickReaction());
-        tvSubaccount.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mSubaccountId = 2;
-                tvSubaccount.setText("Verkauf / Ebay");
-                return true;
-            }
-        });
-        tvValueAddedTax.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final CharSequence[] items = {"19 %", "7 %", "0 %"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setTitle(getString(R.string.value_added_tax))
-                        .setItems(items, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                tvValueAddedTax.setText(items[i]);
-                                switch (i) {
-                                    case 0:
-                                        mValueAddedTax = 19;
-                                        break;
-                                    case 1:
-                                        mValueAddedTax = 7;
-                                        break;
-                                    case 2:
-                                        mValueAddedTax = 0;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .setCancelable(true);
-                builder.show();
-            }
-        });
+        // ClickListener Content
+        tvSubaccount.setOnClickListener(this);
+        tvValueAddedTax.setOnClickListener(this);
+        tvSubaccount.setOnLongClickListener(this);
 
+        // ClickListener Buttons
+        bCharge.setOnClickListener(this);
+        bChargeWithModel.setOnClickListener(this);
     }
 
     private void addModel() {
@@ -243,9 +195,10 @@ public class Fragment_Transaction_Charge extends Fragment {
         try {
             jsonBody.put("code", mTransaction.getCode());
             jsonBody.put("name", etName.getText().toString());
+            mTransaction.setName(etName.getText().toString());
             jsonBody.put("amount", mTransaction.getAmount());
             jsonBody.put("date", mTransaction.getDate());
-            jsonBody.put("ust_value", tvValueAddedTax.getText().toString());
+            jsonBody.put("ust_value", mValueAddedTax);
             jsonBody.put("id_svp_subaccount", mSubaccountId);
             final String requestBody = jsonBody.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -256,7 +209,7 @@ public class Fragment_Transaction_Charge extends Fragment {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
                             Toast.makeText(getActivity(), getString(R.string.transaction_operated), Toast.LENGTH_LONG).show();
-                            ((Activity_Update) getActivity()).manuallyCharged(mTransaction);
+                            ((Activity_Update) getActivity()).manuallyCharged(mTransaction, jsonObject.getInt(Constants_Network.ID_OPERATION));
 
                         }
 
@@ -302,10 +255,7 @@ public class Fragment_Transaction_Charge extends Fragment {
         }
     }
 
-    private View.OnClickListener accountClickReaction() {
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    private void accountClickReaction() {
                 RequestQueue queue;
                 queue = Volley.newRequestQueue(getActivity());
                 final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/accounts";
@@ -364,9 +314,6 @@ public class Fragment_Transaction_Charge extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        };
-        return clickListener;
     }
 
     private void showSubaccountsAndReact(final String accountName, int accountId) {
@@ -395,6 +342,7 @@ public class Fragment_Transaction_Charge extends Fragment {
                                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                                             tvSubaccount.setText(accountName + " / " + jsonObject.getString("name"));
                                             mSubaccountId = jsonObject.getInt("id");
+                                            mTransaction.setSvpSubAccountId(jsonObject.getInt("id"));
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         } finally {
@@ -429,5 +377,64 @@ public class Fragment_Transaction_Charge extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.bCharge:
+                chargeTransaction();
+                break;
+            case R.id.bChargeWithModel:
+                addModel();
+                chargeTransaction();
+                break;
+            case R.id.tvSubaccount:
+                accountClickReaction();
+                break;
+            case R.id.tvValueAddedTax:
+                final CharSequence[] items = {"19 %", "7 %", "0 %"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.value_added_tax))
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                tvValueAddedTax.setText(items[i]);
+                                switch (i) {
+                                    case 0:
+                                        mTransaction.setUstValue(19);
+                                        mValueAddedTax = 19;
+                                        break;
+                                    case 1:
+                                        mTransaction.setUstValue(7);
+                                        mValueAddedTax = 7;
+                                        break;
+                                    case 2:
+                                        mTransaction.setUstValue(0);
+                                        mValueAddedTax = 0;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setCancelable(true);
+                builder.show();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        switch (view.getId()) {
+            case R.id.tvSubaccount:
+                mSubaccountId = 2;
+                tvSubaccount.setText("Verkauf / Ebay");
+                return true;
+        }
+        return false;
     }
 }

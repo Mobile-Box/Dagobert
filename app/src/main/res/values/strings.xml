@@ -9,7 +9,7 @@
     <string name="transaction_no_or_multiple_model">No or multiple Model: </string>
     <string name="transaction_no_model">No model</string>
     <string name="transaction_multiple_model">Multiple model</string>
-    <string name="transaction_charged_manually">Charged manually</string>
+    <string name="transaction_charged_manually">Manually</string>
     <string name="transactions_total">Total: </string>
     <string name="transactions_already_charged">Already charged: </string>
     <string name="number_files">Files: </string>
@@ -27,6 +27,7 @@
     <string name="date">Datum</string>
     <string name="svp_subaccount_id">Unterkonto-Id</string>
     <string name="charge">Buchen</string>
+    <string name="recharge">Recharge</string>
     <string name="charge_model">Buchen  &amp; Vorlage</string>
     <string name="no_detail">Nicht vorhanden</string>
     <string name="value_added_tax">Value added tax</string>

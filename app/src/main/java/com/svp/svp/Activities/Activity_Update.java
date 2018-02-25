@@ -12,13 +12,18 @@ import android.widget.TextView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.svp.svp.Adapter.PagerAdapter_ChargeTransactions;
+import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Constants.Constants_Network;
+import com.svp.svp.Fragments.Fragment_Transaction_Show;
+import com.svp.svp.Objects.Operation;
 import com.svp.svp.Objects.Source;
 import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
@@ -58,6 +63,7 @@ public class Activity_Update extends AppCompatActivity {
     private ArrayList<Source> mSources;
     final ArrayList<Transaction> tNoModel = new ArrayList<>();
     final ArrayList<Transaction> tMultipleModel = new ArrayList<>();
+    final ArrayList<Transaction> tManuallyCharged = new ArrayList<>();
     String mLastUrl;
     PagerAdapter_ChargeTransactions mAdapter;
 
@@ -65,6 +71,8 @@ public class Activity_Update extends AppCompatActivity {
     final static int TAB_NO_MODEL = 0;
     final static int TAB_MULTIPLE_MODEL = 1;
     final static int TAB_CHARGED_MANUALLY = 2;
+    private final static int TYPE_CHARGE = 0;
+    private final static int TYPE_SHOW = 1;
 
     // Counter
     private int cFiles = 0;
@@ -76,6 +84,7 @@ public class Activity_Update extends AppCompatActivity {
     private int cCharged = 0;
     private int cNoModel = 0;
     private int cMultipleModel = 0;
+    private int cManuallyCharged = 0;
     int counter = 0;
 
     @Override
@@ -86,7 +95,7 @@ public class Activity_Update extends AppCompatActivity {
         cALL = 0;
 
         // Set up Adapter for ViewPager
-        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel);
+        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel, TYPE_CHARGE);
         mViewPager.setAdapter(mAdapter);
 
         // Set up TabLayout
@@ -98,15 +107,15 @@ public class Activity_Update extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_NO_MODEL:
-                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel);
+                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel, TYPE_CHARGE);
                         mViewPager.setAdapter(mAdapter);
                         break;
                     case TAB_MULTIPLE_MODEL:
-                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
+                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel, TYPE_CHARGE);
                         mViewPager.setAdapter(mAdapter);
                         break;
                     case TAB_CHARGED_MANUALLY:
-                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
+                        mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tManuallyCharged, TYPE_SHOW);
                         mViewPager.setAdapter(mAdapter);
                         break;
                 }
@@ -424,30 +433,82 @@ public class Activity_Update extends AppCompatActivity {
         sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
         */
         sources.add(new Source("Commerzbank_4600", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 1));
-        sources.add(new Source("Commerzbank_9200", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 2));
+        sources.add(new Source("Commerzbank_9200", "txt", "\\t", 3, 3, 2, 0, 0, 4, 1, 2));
         sources.add(new Source("Commerzbank_4500", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 3));
         //sources.add(new Source("Paypal", "txt", "\\t",12, 3, 4, 15, 5, 7, 0, 7));
         //sources.add(new Source("GLS", "txt", "\\t",2, 6, 4, 3, 0, 19, 2, 8));
         return sources;
     }
 
-    public void manuallyCharged(Transaction transaction) {
+    public void manuallyCharged(Transaction transaction, int idOperation) {
         tvCharged.setText(getString(R.string.charged_transactions) + " " + Integer.toString(cCharged++));
         switch (mTabLayout.getSelectedTabPosition()) {
             case TAB_NO_MODEL:
                 tNoModel.remove(transaction);
-                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel);
+                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tNoModel, TYPE_CHARGE);
                 mViewPager.setAdapter(mAdapter);
-                mTabLayout.getTabAt(TAB_NO_MODEL).setText(Integer.toString(cNoModel--) + " - " + getString(R.string.transaction_no_model));
+                cNoModel = cNoModel - 1;
+                mTabLayout.getTabAt(TAB_NO_MODEL).setText(Integer.toString(cNoModel) + " - " + getString(R.string.transaction_no_model));
                 break;
             case TAB_MULTIPLE_MODEL:
                 tMultipleModel.remove(transaction);
-                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel);
+                mAdapter = new PagerAdapter_ChargeTransactions(getSupportFragmentManager(), tMultipleModel, TYPE_CHARGE);
                 mViewPager.setAdapter(mAdapter);
-                mTabLayout.getTabAt(TAB_MULTIPLE_MODEL).setText(Integer.toString(cMultipleModel--) + " - " + getString(R.string.transaction_multiple_model));
+                cMultipleModel = cMultipleModel - 1;
+                mTabLayout.getTabAt(TAB_MULTIPLE_MODEL).setText(Integer.toString(cMultipleModel) + " - " + getString(R.string.transaction_multiple_model));
                 break;
             default:
                 break;
+        }
+        transaction.setId(idOperation);
+        tManuallyCharged.add(transaction);
+        cManuallyCharged = cManuallyCharged + 1;
+        mTabLayout.getTabAt(TAB_CHARGED_MANUALLY).setText(Integer.toString(cManuallyCharged) + " - " + getString(R.string.transaction_charged_manually));
+    }
+
+    private void getOperationAndShowInFragment(int id) {
+        RequestQueue queue;
+        queue = Volley.newRequestQueue(this);
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/operation/"+Integer.toString(id);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        Log.i("Respone", response);
+                        JSONObject jsonObject = new JSONObject(response);
+                        Operation operation = new Operation(jsonObject.getInt("id"), jsonObject.getString("code"),
+                                jsonObject.getString("name"), jsonObject.getString("date"), jsonObject.getDouble("amount_gross"), jsonObject.getDouble("amount_net"), jsonObject.getInt("id_svp_subaccount"), ((int)((jsonObject.getDouble("amount_gross")/jsonObject.getDouble("amount_net"))*100-100)));
+                        Fragment_Transaction_Show fragment = new Fragment_Transaction_Show();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Constants_Intern.OPERATION, operation);
+                        fragment.setArguments(bundle);
+                        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.flMain, fragment);
+                        transaction.commit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("VOLLEY", error.toString());
+                }
+            }) {
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null && response.statusCode == 200) {
+                        responseString = new String(response.data);
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+            queue.add(stringRequest);
+            queue.getCache().clear();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
