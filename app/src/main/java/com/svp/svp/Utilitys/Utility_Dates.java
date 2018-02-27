@@ -1,5 +1,7 @@
 package com.svp.svp.Utilitys;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -16,13 +18,14 @@ public class Utility_Dates {
     }
 
     public static String decodeDateFromSQL(String date) {
-        date = date.replace("-", "");
-        Calendar d = Calendar.getInstance();
-        d.set(Calendar.YEAR, Integer.parseInt(date.substring(0,4)));
-        d.set(Calendar.MONTH, Integer.parseInt(date.substring(4,6)));
-        d.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date.substring(6,8)));
-        SimpleDateFormat format = new SimpleDateFormat("d. MMM - y");
-        return format.format(d.getTime());
+            Log.i("DAATE", date);
+            date = date.replace("-", "");
+            Calendar d = Calendar.getInstance();
+            d.set(Calendar.YEAR, Integer.parseInt(date.substring(0,4)));
+            d.set(Calendar.MONTH, Integer.parseInt(date.substring(4,6)));
+            d.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date.substring(6,8)));
+            SimpleDateFormat format = new SimpleDateFormat("d. MMM - y");
+            return format.format(d.getTime());
     }
 
 

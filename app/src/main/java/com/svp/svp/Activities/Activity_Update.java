@@ -218,7 +218,7 @@ public class Activity_Update extends AppCompatActivity {
                             if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MULTIPLE_MODEL)) {
                                 // Fusion with separate ArrayList
                                 cMultipleModel = cMultipleModel + 1;
-                                mTabLayout.getTabAt(0).setText(Integer.toString(cMultipleModel) + " - " + getString(R.string.transaction_multiple_model));
+                                mTabLayout.getTabAt(1).setText(Integer.toString(cMultipleModel) + " - " + getString(R.string.transaction_multiple_model));
                                 tMultipleModel.add(transaction);
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -327,7 +327,9 @@ public class Activity_Update extends AppCompatActivity {
                         String[] row = csvLine.split(mSource.getFileSplit());
                         ArrayList<String> arrayLine = new ArrayList<>();
                         for (String eachWord : row) //Iterate each String from the array
+
                             arrayLine.add(eachWord);
+                            Log.i("OUUtput", arrayLine.get(0));
                         if (arrayLine.size() > 0) {
                             String a;
                             try {
@@ -346,6 +348,14 @@ public class Activity_Update extends AppCompatActivity {
                                 a = a.substring(1); // Pound and Euro
                             double amount;
                             amount = Double.parseDouble(a);
+
+                            // Date
+                            String date;
+                            if (mSource.getBankAccountId() == 7) {
+                                date = arrayLine.get(mSource.getDatePosition()).replace("\"", "");
+                            } else {
+                                date = arrayLine.get(mSource.getDatePosition());
+                            }
 
                             String code;
                             try {
@@ -384,7 +394,7 @@ public class Activity_Update extends AppCompatActivity {
                                         ((arrayLine.get(mSource.getTypePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getTypePosition()),
                                         (mSource.getDetailOnePosition() == 0 || (arrayLine.get(mSource.getDetailOnePosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailOnePosition()),
                                         (mSource.getDetailTwoPosition() == 0 || (arrayLine.get(mSource.getDetailTwoPosition())).equals("")) ? Constants_Network.EMPTY : arrayLine.get(mSource.getDetailTwoPosition()),
-                                        amount, Utility_Dates.encodeDateForSQL(arrayLine.get(mSource.getDatePosition())), mSource.getBankAccountId()));
+                                        amount, Utility_Dates.encodeDateForSQL(date), mSource.getBankAccountId()));
                             } catch (IndexOutOfBoundsException e) {
                                 e.printStackTrace();
                                 Log.i("ErrorCode2:", arrayLine.toString());
@@ -432,10 +442,10 @@ public class Activity_Update extends AppCompatActivity {
         sources.add(new Source("Amazon_UK", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 5));
         sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
         */
-        sources.add(new Source("Commerzbank_4600", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 1));
-        sources.add(new Source("Commerzbank_9200", "txt", "\\t", 3, 3, 2, 0, 0, 4, 1, 2));
-        sources.add(new Source("Commerzbank_4500", "csv", ";", 3, 3, 2, 0, 0, 4, 1, 3));
-        //sources.add(new Source("Paypal", "txt", "\\t",12, 3, 4, 15, 5, 7, 0, 7));
+        //sources.add(new Source("Commerzbank_4600", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 1));
+        //sources.add(new Source("Commerzbank_9200", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 2));
+        //sources.add(new Source("Commerzbank_5000", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 3));
+        sources.add(new Source("Paypal", "csv", "\",\"",12, 3, 4, 15, 5, 9, 0, 7));
         //sources.add(new Source("GLS", "txt", "\\t",2, 6, 4, 3, 0, 19, 2, 8));
         return sources;
     }
