@@ -1,6 +1,7 @@
 package com.svp.svp.Adapter;
 
 import android.content.Context;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,9 @@ import com.svp.svp.Objects.BalanceSheet.BalanceSheet;
 import com.svp.svp.Objects.BalanceSheet.BalanceSheet_Account;
 import com.svp.svp.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Eric Schumacher on 02.01.2018.
@@ -81,7 +84,14 @@ public class ListAdapter_BalanceSheets extends RecyclerView.Adapter<RecyclerView
         Holder_BalanceSheet h = (Holder_BalanceSheet)holder;
         BalanceSheet bs = mBS.get(position);
         h.tvName.setText(bs.getName());
-        h.tvAmount.setText(Double.toString(bs.getAmount()));
+        Locale locale = Locale.GERMAN;
+        String a = NumberFormat.getNumberInstance(locale).format(bs.getAmount());
+        //h.tvAmount.setText(String.format("%.2f", bs.getAmount()).replace(".", ",")+" €");
+        h.tvAmount.setText(a+" €");
+        if ((bs instanceof BalanceSheet_Account)) {
+            h.tvName.setTextColor(ResourcesCompat.getColor(mContext.getResources(), R.color.colorPrimaryText, null));
+            h.tvAmount.setTextColor(ResourcesCompat.getColor(mContext.getResources(), R.color.colorPrimaryText, null));
+        }
     }
 
     @Override

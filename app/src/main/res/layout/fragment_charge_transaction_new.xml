@@ -148,7 +148,7 @@
                     style="@style/charge_button_one"
                     android:background="@drawable/button_charge_two"
                     android:text="Charge and Create model"
-                    android:layout_marginTop="32dp"/>
+                    android:layout_margin="48dp"/>
 
             </LinearLayout>
 

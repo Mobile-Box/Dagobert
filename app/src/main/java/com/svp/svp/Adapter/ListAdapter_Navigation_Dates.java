@@ -24,7 +24,9 @@ import com.svp.svp.Objects.Navigation.Navigation_Month;
 import com.svp.svp.Objects.Navigation.Navigation_Year;
 import com.svp.svp.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by Eric Schumacher on 04.01.2018.
@@ -51,7 +53,7 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
         ClickInterface clickInterface = new ClickInterface() {
             @Override
             public void onClick(int position) {
-                ((Activity_Main)mContext).buildBalanceSheetFragment(Constants_Intern.BALANCESHEET_TYPE_ACCOUNTS, mDates.get(position), 0);
+                ((Activity_Main) mContext).buildBalanceSheetFragment(Constants_Intern.BALANCESHEET_TYPE_ACCOUNTS, mDates.get(position), 0);
             }
         };
         if (viewType == TYPE_YEAR) {
@@ -65,7 +67,7 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Holder_Date h = (Holder_Date)holder;
+        Holder_Date h = (Holder_Date) holder;
         Navigation_Date date = mDates.get(position);
         h.tvName.setText(date.getName(date.getValue()));
         showProfit(h.tvAmount, date);
@@ -115,13 +117,13 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
         void onClick(int position);
     }
 
-    private void showProfit(final TextView tvProfit, Navigation_Date date) {
+    private void showProfit(final TextView tvProfit, final Navigation_Date date) {
         String year;
         String month;
         if (date instanceof Navigation_Month) {
-            Navigation_Month date_month = (Navigation_Month)date;
+            Navigation_Month date_month = (Navigation_Month) date;
             year = Integer.toString(date_month.getYear());
-            month = "/"+Integer.toString(date_month.getMonth());
+            month = "/" + Integer.toString(date_month.getMonth());
         } else {
             Navigation_Year date_year = (Navigation_Year) date;
             year = Integer.toString(date_year.getYear());
@@ -130,12 +132,28 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
         RequestQueue queue;
         Log.i("Spinnst", "Du");
         queue = Volley.newRequestQueue(mContext);
-        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/profit/"+year+month;
+        final String url = "http://www.svp-server.com/svp-gmbh/dagobert/src/routes/api.php/profit/" + year + month;
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    tvProfit.setText(response);
+                    try {
+                        Double amount = Double.parseDouble(response);
+                        Locale locale = Locale.GERMAN;
+                        String a = NumberFormat.getNumberInstance(locale).format(amount);
+                        //a = String.format("%.0f", a);
+                        try {
+                        } catch (Exception e) {Log.i("EEERRROR", "What");}
+
+                        tvProfit.setText(a + " €");
+
+                    } catch (NumberFormatException e) {
+                        //rlItem.setVisibility(View.GONE);
+                        mDates.remove(date);
+                        notifyDataSetChanged();
+                        Log.i("Handled Error", "No money calculated for that month or year");
+                    }
+
 
                 }
             }, new Response.ErrorListener() {

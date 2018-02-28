@@ -53,6 +53,7 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
         // Layout
         setUpLayout();
+        mDrawer.openDrawer(Gravity.LEFT);
 
         // Variables
         mFragmentManager = getSupportFragmentManager();

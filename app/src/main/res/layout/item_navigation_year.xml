@@ -7,7 +7,8 @@
     <ImageView
         android:id="@+id/image_view"
         style="@style/image_view_navigation"
-        android:src="@drawable/ic_calendar_24dp"/>
+        android:src="@drawable/ic_calendar_24dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvDate"
