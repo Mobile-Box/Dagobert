@@ -1,6 +1,7 @@
 package com.svp.svp.Fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,6 +67,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
     Transaction mTransaction;
     int mSubaccountId;
     int mValueAddedTax;
+    Context mContext;
 
     @Nullable
     @Override
@@ -74,6 +76,9 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
         // Layout
         mLayout = inflater.inflate(R.layout.fragment_charge_transaction_new, container, false);
         setLayout();
+
+        // Variables
+        mContext = getContext();
 
         // Data
         Bundle bundle = getArguments();
@@ -140,7 +145,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MODEL_ADDED)) {
-                            Toast.makeText(getActivity(), getString(R.string.model_added), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, mContext.getString(R.string.model_added), Toast.LENGTH_SHORT).show();
                         }
                         if (!jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.MODEL_EXISTS)) {
                             Toast.makeText(getActivity(), getString(R.string.model_exists), Toast.LENGTH_SHORT).show();

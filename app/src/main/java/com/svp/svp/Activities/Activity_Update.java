@@ -199,11 +199,11 @@ public class Activity_Update extends AppCompatActivity {
                 jsonBody.put("date", transaction.getDate());
                 jsonBody.put("id_bank_account", transaction.getBankAccountId());
                 final String requestBody = jsonBody.toString();
-                Log.i("RequestBody " + Integer.toString(counter), requestBody);
+                //Log.i("RequestBody " + Integer.toString(counter), requestBody);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i("ResponseFromServer", response);
+                        //Log.i("ResponseFromServer", response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             // No Model
@@ -322,7 +322,7 @@ public class Activity_Update extends AppCompatActivity {
                     while ((csvLine = reader.readLine()) != null) {
                         rowNumber++;
                         cTotal++;
-                        Log.i("BackFromServer: ", csvLine);
+                        //Log.i("BackFromServer: ", csvLine);
                         //String[] row = csvLine.split(";");
                         String[] row = csvLine.split(mSource.getFileSplit());
                         ArrayList<String> arrayLine = new ArrayList<>();
@@ -347,7 +347,16 @@ public class Activity_Update extends AppCompatActivity {
                             if (mSource.getBankAccountId() == 5 || mSource.getBankAccountId() == 4 || mSource.getBankAccountId() == 6)
                                 a = a.substring(1); // Pound and Euro
                             double amount;
-                            amount = Double.parseDouble(a);
+                            try {
+                                amount = Double.parseDouble(a);
+                            } catch (NumberFormatException e) {
+                                amount = 0;
+                                e.printStackTrace();
+                                cError++;
+                                Log.i("Error9", a.toString());
+                                continue;
+                            }
+
 
                             // Date
                             String date;
@@ -438,15 +447,15 @@ public class Activity_Update extends AppCompatActivity {
 
     private ArrayList<Source> createSources() {
         ArrayList<Source> sources = new ArrayList<>();
-        /*sources.add(new Source("Amazon_DE", "txt", "\\t", 1, 8, 3, 4, 0, 6, 0, 4));
-        sources.add(new Source("Amazon_UK", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 5));
-        sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
-        */
+        //sources.add(new Source("Amazon_DE", "txt", "\\t", 1, 8, 3, 4, 0, 6, 0, 4));
+        //sources.add(new Source("Amazon_UK", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 5));
+        //sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
+
         //sources.add(new Source("Commerzbank_4600", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 1));
-        sources.add(new Source("Commerzbank_9200", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 2));
+        //sources.add(new Source("Commerzbank_9200", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 2));
         //sources.add(new Source("Commerzbank_5000", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 3));
-        sources.add(new Source("Paypal", "csv", "\",\"",12, 3, 4, 15, 5, 9, 0, 7));
-        //sources.add(new Source("GLS", "txt", "\\t",2, 6, 4, 3, 0, 19, 2, 8));
+        sources.add(new Source("Paypal", "CSV", "\",\"",12, 3, 4, 15, 5, 9, 0, 7));
+        sources.add(new Source("GLS", "txt", "\\t",2, 6, 4, 3, 0, 19, 2, 8));
         return sources;
     }
 
