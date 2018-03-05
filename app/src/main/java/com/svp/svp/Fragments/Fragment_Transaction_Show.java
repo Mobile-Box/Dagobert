@@ -1,6 +1,8 @@
 package com.svp.svp.Fragments;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +43,7 @@ import java.io.UnsupportedEncodingException;
  * Created by Eric Schumacher on 20.02.2018.
  */
 
-public class Fragment_Transaction_Show extends Fragment implements View.OnClickListener {
+public class Fragment_Transaction_Show extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     // Layout
     View mLayout;
@@ -57,11 +60,13 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
     int mSubaccountId;
     int mValueAddedTax;
     Operation mOperation;
+    Context mContext;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mLayout = inflater.inflate(R.layout.fragment_charge_transaction_new, container, false);
+        mContext = getActivity();
 
         // Layout
         setLayout();
@@ -94,6 +99,7 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
         // ClickListener Content
         tvSubaccount.setOnClickListener(this);
         tvValueAddedTax.setOnClickListener(this);
+        tvDate.setOnClickListener(this);
 
         // ClickListener Buttons
         bCharge.setOnClickListener(this);
@@ -136,6 +142,9 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
                         .setCancelable(true);
                 builder.show();
                 break;
+            case R.id.tvDate:
+                DatePickerDialog dialog = new DatePickerDialog(mContext, this, mOperation.getYear(), mOperation.getMonth(), mOperation.getDay());
+                dialog.show();
             default:
                 break;
         }
@@ -324,5 +333,13 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        mOperation.setYear(i);
+        mOperation.setMonth(i1);
+        mOperation.setDay(i2);
+        tvDate.setText(Utility_Dates.decodeDateFromSQL(mOperation.getDate()));
     }
 }

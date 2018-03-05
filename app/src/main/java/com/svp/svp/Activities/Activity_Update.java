@@ -452,7 +452,7 @@ public class Activity_Update extends AppCompatActivity {
         //sources.add(new Source("Amazon_ES", "txt", "\\t",1, 8, 3, 4, 0, 6, 0, 6));
 
         //sources.add(new Source("Commerzbank_4600", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 1));
-        //sources.add(new Source("Commerzbank_9200", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 2));
+        sources.add(new Source("Commerzbank_9200", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 2));
         //sources.add(new Source("Commerzbank_5000", "CSV", ";", 3, 3, 2, 0, 0, 4, 1, 3));
         sources.add(new Source("Paypal", "CSV", "\",\"",12, 3, 4, 15, 5, 9, 0, 7));
         sources.add(new Source("GLS", "txt", "\\t",2, 6, 4, 3, 0, 19, 2, 8));

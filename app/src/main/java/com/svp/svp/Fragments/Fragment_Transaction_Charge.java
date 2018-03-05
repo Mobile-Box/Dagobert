@@ -1,6 +1,7 @@
 package com.svp.svp.Fragments;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,7 +47,7 @@ import java.text.DecimalFormat;
  * Created by Eric Schumacher on 13.12.2017.
  */
 
-public class Fragment_Transaction_Charge extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+public class Fragment_Transaction_Charge extends Fragment implements View.OnClickListener, View.OnLongClickListener, DatePickerDialog.OnDateSetListener {
 
     // Layout
     View mLayout;
@@ -122,6 +124,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
         // ClickListener Buttons
         bCharge.setOnClickListener(this);
         bChargeWithModel.setOnClickListener(this);
+        tvDate.setOnClickListener(this);
     }
 
     private void addModel() {
@@ -427,6 +430,9 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
                         .setCancelable(true);
                 builder.show();
                 break;
+            case R.id.tvDate:
+                DatePickerDialog dialog = new DatePickerDialog(mContext, this, mTransaction.getYear(), mTransaction.getMonth(), mTransaction.getDay());
+                dialog.show();
             default:
                 break;
         }
@@ -441,5 +447,13 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        mTransaction.setYear(i);
+        mTransaction.setMonth(i1);
+        mTransaction.setDay(i2);
+        tvDate.setText(Utility_Dates.decodeDateFromSQL(mTransaction.getDate()));
     }
 }

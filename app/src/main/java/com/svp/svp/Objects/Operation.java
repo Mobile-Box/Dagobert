@@ -1,5 +1,7 @@
 package com.svp.svp.Objects;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -21,7 +23,7 @@ public class Operation implements Serializable {
         this.ust_value = ust_value;
         this.code = code;
         this.name = name;
-        this.date = date;
+        this.date = date.replace("-", "");
         this.amount_gross = amount_gross;
         this.amount_net = amount_net;
         this.id_svp_subaccount = id_svp_subaccount;
@@ -69,5 +71,39 @@ public class Operation implements Serializable {
 
     public void setId_svp_subaccount(int id_svp_subaccount) {
         this.id_svp_subaccount = id_svp_subaccount;
+    }
+
+    public int getYear() {
+        return Integer.parseInt(date.substring(0,4));
+    }
+
+    public int getMonth() {
+        return Integer.parseInt(date.substring(4,6))-1;
+    }
+
+    public int getDay() {
+        Log.i("Ichmachschon", date);
+        return Integer.parseInt(date.substring(6,8));
+    }
+
+    public void setMonth(int m) {
+        String month = Integer.toString(m+1);
+        StringBuffer sb = new StringBuffer(date);
+        sb.replace(4,6, (month.length() < 2) ? "0"+month : month);
+        date = sb.toString();
+    }
+
+    public void setDay(int d) {
+        String day = Integer.toString(d);
+        StringBuffer sb = new StringBuffer(date);
+        sb.replace(6,8, (day.length() < 2) ? "0"+day : day);
+        date = sb.toString();
+    }
+
+    public void setYear(int y) {
+        String year = Integer.toString(y);
+        StringBuffer sb = new StringBuffer(date);
+        sb.replace(0,4, year);
+        date = sb.toString();
     }
 }
