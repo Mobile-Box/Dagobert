@@ -2,6 +2,8 @@ package com.svp.svp.Activities;
 
 // Provides screen for Navigation Drawer and Fragments, called by the menu in the drawer
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -22,20 +24,24 @@ import android.widget.TextView;
 import com.svp.svp.Adapter.ListAdapter_Navigation_Dates;
 import com.svp.svp.Constants.Constants_Intern;
 import com.svp.svp.Fragments.Fragment_BalanceSheet;
+import com.svp.svp.Fragments.Fragment_Transaction_Charge;
 import com.svp.svp.Interfaces.Interface_BalanceSheetFragment;
 import com.svp.svp.Objects.Navigation.Navigation_Date;
 import com.svp.svp.Objects.Navigation.Navigation_Month;
 import com.svp.svp.Objects.Navigation.Navigation_Year;
+import com.svp.svp.Objects.Transaction;
 import com.svp.svp.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 public class Activity_Main extends AppCompatActivity implements View.OnClickListener, Interface_BalanceSheetFragment {
 
     // Layout
     TextView tvOutput;
     RelativeLayout rlUpdate;
+    RelativeLayout rlChargeManually;
     RelativeLayout rlBusinessAssets;
     RelativeLayout rlLiabilities;
     RelativeLayout rlClaims;
@@ -89,6 +95,7 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main);
 
         rlUpdate = findViewById(R.id.rlUpdate);
+        rlChargeManually = findViewById(R.id.rlManualCharge);
         rlBusinessAssets = findViewById(R.id.rlBusinessAssets);
         rlClaims = findViewById(R.id.rlClaims);
         rlLiabilities = findViewById(R.id.rlLiabilities);
@@ -110,6 +117,7 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
 
         // setOnClickListener
         rlUpdate.setOnClickListener(this);
+        rlChargeManually.setOnClickListener(this);
         rlBusinessAssets.setOnClickListener(this);
 
         // RecyclerView
@@ -123,17 +131,32 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
             case R.id.rlUpdate:
                 startActivity(new Intent(this, Activity_Update.class));
                 break;
-            case R.id.rlBusinessAssets:
+            case R.id.rlManualCharge:
+                final CharSequence[] items = {"Commerzbank_4600", "Commerzbank_9200", "Commerzbank_5000", "Amazon_DE", "Amazon_UK", "Amazon_ES", "Paypal", "GLS"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.value_added_tax))
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                buildChargeManuallyFragment(i+1);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setCancelable(true);
+                builder.show();
 
-                break;
-            case R.id.rlLiabilities:
-
-                break;
-            case R.id.rlClaims:
-
-                break;
 
         }
+    }
+
+    private void buildChargeManuallyFragment (int bankAccountId) {
+        Fragment fragment = new Fragment_Transaction_Charge();
+        Transaction transaction = new Transaction(UUID.randomUUID().toString(), "name", "type", "EMPTY", "EMPTY",
+                0, "20180101", bankAccountId);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants_Intern.TRANSACTION, transaction);
+        fragment.setArguments(bundle);
+        openFragment(fragment);
     }
 
     public void buildBalanceSheetFragment(String type, Navigation_Date date, int id) {

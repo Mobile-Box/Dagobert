@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +58,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
     EditText etType;
     EditText etDetailOne;
     EditText etDetailTwo;
-    TextView tvAmount;
+    EditText etAmount;
     TextView tvDate;
     TextView tvSubaccount;
     TextView tvValueAddedTax;
@@ -69,6 +71,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
     Transaction mTransaction;
     int mSubaccountId;
     int mValueAddedTax;
+    double mAmount;
     Context mContext;
 
     @Nullable
@@ -85,9 +88,11 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
         // Data
         Bundle bundle = getArguments();
         mTransaction = (Transaction) bundle.getSerializable(Constants_Intern.TRANSACTION);
+        mAmount = mTransaction.getAmount();
         tvAccount.setText(Source.getSpeceficBankAccountName(mTransaction.getBankAccountId()));
         DecimalFormat df2 = new DecimalFormat(".##");
-        tvAmount.setText(String.format("%.2f", mTransaction.getAmount()) + " €");
+        //etAmount.setText(String.format("%.2f", mAmount) + " €");
+        etAmount.setText(Double.toString(mAmount));
         tvDate.setText(Utility_Dates.decodeDateFromSQL(mTransaction.getDate()));
         etName.setText(mTransaction.getName());
         etType.setText(mTransaction.getType());
@@ -103,7 +108,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
 
     private void setLayout() {
         tvAccount = mLayout.findViewById(R.id.tvAccount);
-        tvAmount = mLayout.findViewById(R.id.tvAmount);
+        etAmount = mLayout.findViewById(R.id.etAmount);
         tvDate = mLayout.findViewById(R.id.tvDate);
         etName = mLayout.findViewById(R.id.etName);
         etType = mLayout.findViewById(R.id.etType);
@@ -115,6 +120,20 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
         bChargeWithModel = mLayout.findViewById(R.id.bChargeWithModel);
         llDetailOne = mLayout.findViewById(R.id.llDetailOne);
         llDetailTwo = mLayout.findViewById(R.id.llDetailTwo);
+
+        // TextWatcher
+        etAmount.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+                    mAmount = Double.parseDouble(editable.toString().replace(" ", "").replace("€", ""));
+                }
+
+                //etAmount.setText(String.format("%.2f", mAmount) + " €");
+            }
+        });
 
         // ClickListener Content
         tvSubaccount.setOnClickListener(this);
@@ -204,7 +223,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
             jsonBody.put("code", mTransaction.getCode());
             jsonBody.put("name", etName.getText().toString());
             mTransaction.setName(etName.getText().toString());
-            jsonBody.put("amount", mTransaction.getAmount());
+            jsonBody.put("amount", mAmount);
             jsonBody.put("date", mTransaction.getDate());
             jsonBody.put("ust_value", mValueAddedTax);
             jsonBody.put("id_svp_subaccount", mSubaccountId);
@@ -217,8 +236,9 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString(Constants_Network.RESPONSE).equals(Constants_Network.SUCCESS) && jsonObject.getString(Constants_Network.DETAILS).equals(Constants_Network.TRANSACTION_OPERATED)) {
                             Toast.makeText(getActivity(), getString(R.string.transaction_operated), Toast.LENGTH_LONG).show();
-                            ((Activity_Update) getActivity()).manuallyCharged(mTransaction, jsonObject.getInt(Constants_Network.ID_OPERATION));
-
+                            if (getActivity() instanceof Activity_Update) {
+                                ((Activity_Update) getActivity()).manuallyCharged(mTransaction, jsonObject.getInt(Constants_Network.ID_OPERATION));
+                            }
                         }
 
                     } catch (JSONException e) {

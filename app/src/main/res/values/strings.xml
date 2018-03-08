@@ -44,5 +44,6 @@
     <string name="liabilities">Liabilities</string>
     <string name="claims">Claims</string>
     <string name="update">Update</string>
+    <string name="charge_manually">Charge manually</string>
 
 </resources>

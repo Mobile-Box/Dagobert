@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,7 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
     View mLayout;
     TextView tvAccount;
     EditText etName;
-    TextView tvAmount;
+    TextView etAmount;
     TextView tvDate;
     TextView tvSubaccount;
     TextView tvValueAddedTax;
@@ -59,6 +61,7 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
     // Variables
     int mSubaccountId;
     int mValueAddedTax;
+    double mAmount;
     Operation mOperation;
     Context mContext;
 
@@ -73,7 +76,9 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
 
         // Data
         mOperation = (Operation)getArguments().getSerializable(Constants_Intern.OPERATION);
-        tvAmount.setText(Double.toString(mOperation.getAmount_gross()));
+        mAmount = mOperation.getAmount_gross();
+        //etAmount.setText(String.format("%.2f", mAmount) + " €");
+        etAmount.setText(Double.toString(mAmount));
         tvDate.setText(Utility_Dates.decodeDateFromSQL(mOperation.getDate()));
         etName.setText(mOperation.getName());
         mSubaccountId = mOperation.getId_svp_subaccount();
@@ -88,13 +93,25 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
         llAddModel = mLayout.findViewById(R.id.llModel);
         llAddModel.setVisibility(View.GONE);
         tvAccount = mLayout.findViewById(R.id.tvAccount);
-        tvAmount = mLayout.findViewById(R.id.tvAmount);
+        etAmount = mLayout.findViewById(R.id.etAmount);
         tvDate = mLayout.findViewById(R.id.tvDate);
         etName = mLayout.findViewById(R.id.etName);
         tvSubaccount = mLayout.findViewById(R.id.tvSubaccount);
         tvValueAddedTax = mLayout.findViewById(R.id.tvValueAddedTax);
         bCharge = mLayout.findViewById(R.id.bCharge);
         bCharge.setText(getString(R.string.recharge));
+
+        etAmount.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals("")) {
+                    mAmount = Double.parseDouble(editable.toString());
+                }
+
+            }
+        });
 
         // ClickListener Content
         tvSubaccount.setOnClickListener(this);
@@ -282,7 +299,7 @@ public class Fragment_Transaction_Show extends Fragment implements View.OnClickL
         try {
             jsonBody.put("code", mOperation.getCode());
             jsonBody.put("name", etName.getText().toString());
-            jsonBody.put("amount", mOperation.getAmount_gross());
+            jsonBody.put("amount", mAmount);
             jsonBody.put("date", mOperation.getDate());
             jsonBody.put("ust_value", mValueAddedTax);
             jsonBody.put("id_svp_subaccount", mSubaccountId);

@@ -55,6 +55,29 @@
             android:background="@color/colorBackgroundText" />
 
         <RelativeLayout
+            android:id="@+id/rlManualCharge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivManualCharge"
+                style="@style/image_view_navigation"
+                android:src="@drawable/ic_edit_24dp" />
+
+            <TextView
+                style="@style/text_view_navigation"
+                android:layout_toRightOf="@id/ivManualCharge"
+                android:text="@string/charge_manually" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/colorBackgroundText" />
+
+        <RelativeLayout
             android:id="@+id/rlBusinessAssets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

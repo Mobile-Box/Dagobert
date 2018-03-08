@@ -16,11 +16,13 @@
             style="@style/charge_text_view_subtext"
             android:text="12 Februar 2017" />
 
-        <TextView
-            android:id="@+id/tvAmount"
+        <EditText
+            android:id="@+id/etAmount"
             style="@style/charge_text_view_subtext"
             android:text="1.345 €"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:inputType="numberDecimal|numberSigned"
+            android:background="@color/colorTransaparent"/>
 
         <TextView
             android:id="@+id/tvAccount"
