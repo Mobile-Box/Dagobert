@@ -140,7 +140,8 @@ public class ListAdapter_Navigation_Dates extends RecyclerView.Adapter<RecyclerV
                     try {
                         Double amount = Double.parseDouble(response);
                         Locale locale = Locale.GERMAN;
-                        String a = NumberFormat.getNumberInstance(locale).format(amount);
+                        String s = String.format("%.2f", amount);
+                        String a = NumberFormat.getNumberInstance(locale).format(Double.parseDouble(s));
                         //a = String.format("%.0f", a);
                         try {
                         } catch (Exception e) {Log.i("EEERRROR", "What");}

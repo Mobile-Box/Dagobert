@@ -127,7 +127,7 @@ public class Fragment_Transaction_Charge extends Fragment implements View.OnClic
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!editable.toString().equals("")) {
+                if (!editable.toString().equals("") && !editable.toString().equals("-")) {
                     mAmount = Double.parseDouble(editable.toString().replace(" ", "").replace("€", ""));
                 }
 
